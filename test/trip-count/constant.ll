@@ -12,7 +12,7 @@
 ; RUN:   -passes=looplens-analyze -disable-output %s 2>&1 | FileCheck %s
 
 ; CHECK-LABEL: looplens: function 'const100'
-; CHECK-NEXT:  loop header=for.body depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=%for.body depth=1 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=constant count=100 btc=[99] max-btc=[99] symbolic-max-btc=[99]{{$}}
 ; CHECK-NOT:   loop header=
 

@@ -14,9 +14,9 @@
 ; RUN:   -passes=looplens-analyze -disable-output %s 2>&1 | FileCheck %s
 
 ; CHECK-LABEL: looplens: function 'tri'
-; CHECK-NEXT:  loop header=for.body depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=%for.body depth=1 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + %n)] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + %n)]{{$}}
-; CHECK-NEXT:  loop header=for.body4 depth=2 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=%for.body4 depth=2 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[{-1,+,1}<nsw><%for.body>] max-btc=[9223372036854775805] symbolic-max-btc=[{-1,+,1}<nsw><%for.body>]{{$}}
 ; CHECK-NOT:   loop header=
 

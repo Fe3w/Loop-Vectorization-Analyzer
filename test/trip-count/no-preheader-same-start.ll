@@ -7,7 +7,7 @@
 ; RUN:   -passes=looplens-analyze -disable-output %s 2>&1 | FileCheck %s
 
 ; CHECK-LABEL: looplens: function 'nopre_same'
-; CHECK-NEXT:  loop header=loop depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=%loop depth=1 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + (1 smax %n))<nsw>] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + (1 smax %n))<nsw>]{{$}}
 ; CHECK-NOT:   loop header=
 

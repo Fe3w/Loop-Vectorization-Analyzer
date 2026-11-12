@@ -11,6 +11,7 @@
 #ifndef LOOPLENS_LOOPRECORD_H
 #define LOOPLENS_LOOPRECORD_H
 
+#include <memory>
 #include <string>
 
 namespace llvm {
@@ -31,8 +32,9 @@ enum class TripKind { Constant, Symbolic, Unknown };
 struct TripFacts {
   TripKind Kind = TripKind::Unknown;
   std::string Count = "none"; // exact trip count, only for Constant
-  std::string Reason;         // only for Unknown: multiple-exits |
-                              // needs-scev-predicate | exit-cond-not-affine |
+  std::string Reason;         // only for Unknown, in precedence order:
+                              // no-exit | needs-scev-predicate |
+                              // multiple-exits | exit-cond-not-affine |
                               // exit-cond-not-icmp | other
   std::string BTC, MaxBTC, SymMaxBTC;
 };
@@ -47,14 +49,14 @@ struct LoopRecord {
   TripFacts Trip;
 };
 
-// MST numbers unnamed blocks; pass one tracker per function (after
-// MST.incorporateFunction(F)) so numbering is not rebuilt for every loop.
+// MST numbers unnamed header blocks. Pass one (initially empty) slot per
+// function; it is created on the first unnamed header and reused after that.
 LoopRecord makeLoopRecord(const llvm::Function &F, const llvm::Loop &L,
-                          llvm::ModuleSlotTracker &MST,
+                          std::unique_ptr<llvm::ModuleSlotTracker> &MST,
                           llvm::ScalarEvolution &SE);
 
 // Format (one block per loop):
-//   "  loop header=<hdr> depth=<d> loc=<file>:<line>:<col>"   (or loc=<none>)
+//   "  loop header=%<hdr> depth=<d> loc=<file>:<line>:<col>"  (or loc=<none>)
 //   "    trip kind=<k> [reason=<r>] count=<n|none> btc=[<scev>]
 //        max-btc=[<scev>] symbolic-max-btc=[<scev>]"          (one line)
 // SCEV text contains spaces, hence the brackets.

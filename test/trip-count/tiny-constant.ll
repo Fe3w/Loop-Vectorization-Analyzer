@@ -12,7 +12,7 @@
 ; RUN:   -passes=looplens-analyze -disable-output %s 2>&1 | FileCheck %s
 
 ; CHECK-LABEL: looplens: function 'tiny'
-; CHECK-NEXT:  loop header=for.body depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=%for.body depth=1 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=constant count=3 btc=[2] max-btc=[2] symbolic-max-btc=[2]{{$}}
 ; CHECK-NOT:   loop header=
 

@@ -37,10 +37,10 @@ struct LoopLensAnalyze : PassInfoMixin<LoopLensAnalyze> {
     ScalarEvolution &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
 
     errs() << "looplens: function '" << F.getName() << "'\n";
-    // One slot tracker per function: unnamed headers print as %N without
-    // renumbering the module for every loop.
-    ModuleSlotTracker MST(F.getParent());
-    MST.incorporateFunction(F);
+    // Slot tracker for unnamed headers (%N): created lazily by
+    // makeLoopRecord on the first unnamed header, then reused for this
+    // function's other loops.
+    std::unique_ptr<ModuleSlotTracker> MST;
     // Preorder: outer loop before its inner loops, siblings in program
     // order, so test output is deterministic.
     for (Loop *L : LI.getLoopsInPreorder())

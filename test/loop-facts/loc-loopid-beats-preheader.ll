@@ -5,7 +5,7 @@
 
 ; CHECK-NOT:   warning:
 ; CHECK-LABEL: looplens: function 'f'
-; CHECK-NEXT:  loop header=loop depth=1 loc=fallback.c:2:3{{$}}
+; CHECK-NEXT:  loop header=%loop depth=1 loc=fallback.c:2:3{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @f(ptr %a, i64 %n) !dbg !4 {

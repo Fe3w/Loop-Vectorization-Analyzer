@@ -12,7 +12,7 @@
 ; RUN:   -passes=looplens-analyze -disable-output %s 2>&1 | FileCheck %s
 
 ; CHECK-LABEL: looplens: function 'step2ne'
-; CHECK-NEXT:  loop header=for.body depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=%for.body depth=1 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[((-2 + %n) /u 2)] max-btc=[9223372036854775807] symbolic-max-btc=[((-2 + %n) /u 2)]{{$}}
 ; CHECK-NOT:   loop header=
 

@@ -14,7 +14,7 @@
 ; RUN:   -passes=looplens-analyze -disable-output %s 2>&1 | FileCheck %s
 
 ; CHECK-LABEL: looplens: function 'datadep'
-; CHECK-NEXT:  loop header=while.cond depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=%while.cond depth=1 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=unknown reason=exit-cond-not-affine count=none btc=[***COULDNOTCOMPUTE***] max-btc=[***COULDNOTCOMPUTE***] symbolic-max-btc=[***COULDNOTCOMPUTE***]{{$}}
 ; CHECK-NOT:   loop header=
 

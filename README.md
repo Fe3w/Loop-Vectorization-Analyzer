@@ -29,7 +29,7 @@ Output is one block per loop, outer before inner:
 
 ```
 looplens: function 'saxpy'
-  loop header=for.body depth=1 loc=saxpy.c:2:3
+  loop header=%for.body depth=1 loc=saxpy.c:2:3
     trip kind=symbolic count=none btc=[(-1 + %n)] max-btc=[2147483646] symbolic-max-btc=[(-1 + %n)]
 ```
 
@@ -39,12 +39,17 @@ looplens: function 'saxpy'
   `count`), `symbolic` or `unknown`; `btc` is the backedge-taken count
   (trip count − 1), followed by its constant and symbolic upper bounds, as SCEV
   text in brackets (`***COULDNOTCOMPUTE***` when unknown). Unknown loops carry a
-  coarse `reason`, first match wins: `multiple-exits`; `needs-scev-predicate`
-  (computable once SCEV may assume e.g. no-wrap, which a runtime check can
-  guarantee); `exit-cond-not-affine` (an exit-compare operand, looking through
-  `&&`/`||` and integer casts, is neither loop-invariant nor an affine
-  recurrence of the loop — e.g. a loaded value); `exit-cond-not-icmp` (e.g. a
-  floating-point compare); `other`.
+  coarse `reason`, first match wins: `no-exit` (e.g. `while (1)`);
+  `needs-scev-predicate` (computable once SCEV may assume e.g. no-wrap, which a
+  runtime check can guarantee; any number of exits); `multiple-exits`;
+  `exit-cond-not-affine` (an operand of the exit compare or switch — looking
+  through `&&`/`||`, `!`, `freeze` and integer casts — is neither
+  loop-invariant nor an affine recurrence of the loop, e.g. a loaded value);
+  `exit-cond-not-icmp` (e.g. a floating-point compare); `other`. For a single
+  exit all leaf conditions are inspected, so the reason does not depend on
+  operand order.
+- `header=` is the header block as an IR operand (`%for.body`, `%1` when
+  unnamed), the form `print<loops>` uses and the one inside SCEV text.
 
 Input should be in the canonical form LoopVectorize sees (loop-simplify, LCSSA,
 rotated; the recipe above produces it). LoopLens is an analysis and never

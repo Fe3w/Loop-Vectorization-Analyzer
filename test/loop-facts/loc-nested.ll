@@ -15,9 +15,9 @@
 
 ; CHECK-NOT:   warning:
 ; CHECK-LABEL: looplens: function 'nest'
-; CHECK-NEXT:  loop header=for.body depth=1 loc=nest.c:2:3{{$}}
+; CHECK-NEXT:  loop header=%for.body depth=1 loc=nest.c:2:3{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + %n)] max-btc=[2147483646] symbolic-max-btc=[(-1 + %n)]{{$}}
-; CHECK-NEXT:  loop header=for.body4 depth=2 loc=nest.c:3:5{{$}}
+; CHECK-NEXT:  loop header=%for.body4 depth=2 loc=nest.c:3:5{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + %n)] max-btc=[2147483646] symbolic-max-btc=[(-1 + %n)]{{$}}
 ; CHECK-NOT:   loop header=
 

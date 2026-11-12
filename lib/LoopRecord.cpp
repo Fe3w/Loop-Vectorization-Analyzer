@@ -8,6 +8,7 @@
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/DebugLoc.h"
 #include "llvm/IR/Function.h"
+#include "llvm/IR/IRPrintingPasses.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/PatternMatch.h"
 #include "llvm/IR/ModuleSlotTracker.h"
@@ -41,53 +42,71 @@ bool isAffineOrInvariant(const SCEV *S, const Loop &L, ScalarEvolution &SE) {
   return AR && AR->getLoop() == &L && AR->isAffine();
 }
 
-// Why ScalarEvolution could not compute the exact BTC. A closed list, first
-// match wins; precise blockers and evidence are the classifier's job (S08+).
-// Assumes canonical input (loop-simplify/LCSSA/rotate, as LoopVectorize sees
-// it): loop shape is reported elsewhere and is not a reason here.
+// Why ScalarEvolution could not compute the exact BTC. A closed list; the
+// order below is the precedence. Precise blockers and evidence are the
+// classifier's job (S08+). Assumes canonical input (loop-simplify/LCSSA/rotate,
+// as LoopVectorize sees it): loop shape is reported elsewhere, not here.
 std::string unknownTripReason(const Loop &L, ScalarEvolution &SE) {
-  BasicBlock *Exiting = L.getExitingBlock();
-  if (!Exiting)
-    return "multiple-exits";
+  SmallVector<BasicBlock *, 4> Exiting;
+  L.getExitingBlocks(Exiting);
+  // 1. No exit at all (while (1)). getExitingBlock() is null here too, so it
+  //    must be told apart from several exits.
+  if (Exiting.empty())
+    return "no-exit";
 
-  // Computable once SCEV may assume no-wrap (or similar) predicates, which a
-  // runtime check can guarantee; LoopVectorize asks the same question via
-  // PredicatedScalarEvolution.
+  // 2. Computable once SCEV may assume no-wrap (or similar) predicates, which
+  //    a runtime check can guarantee -- for one exit or several. LoopVectorize
+  //    asks the same question via PredicatedScalarEvolution.
   SmallVector<const SCEVPredicate *, 4> Preds;
   if (!isa<SCEVCouldNotCompute>(SE.getPredicatedBackedgeTakenCount(&L, Preds)))
     return "needs-scev-predicate";
 
-  auto *Br = dyn_cast<BranchInst>(Exiting->getTerminator());
-  if (!Br || !Br->isConditional())
-    return "other";
+  // 3. Several exits and not countable even with predicates.
+  if (Exiting.size() > 1)
+    return "multiple-exits";
 
-  // Split logical and/or (`a && b` is lowered to `select a, b, false`) into
-  // their leaf conditions.
-  SmallVector<Value *, 4> Work{Br->getCondition()}, Leaves;
-  while (!Work.empty()) {
-    Value *V = Work.pop_back_val();
-    Value *A, *B;
-    if (match(V, m_LogicalAnd(m_Value(A), m_Value(B))) ||
-        match(V, m_LogicalOr(m_Value(A), m_Value(B)))) {
-      Work.push_back(A);
-      Work.push_back(B);
-    } else {
-      Leaves.push_back(V);
+  // 4./5. Single exit: inspect every leaf condition of the exit, then decide
+  //    by precedence (not-affine > not-icmp), independent of operand order.
+  Instruction *Term = Exiting.front()->getTerminator();
+  bool NotAffine = false, NonICmp = false;
+  auto CheckOperand = [&](Value *Op) {
+    if (!isAffineOrInvariant(SE.getSCEV(Op), L, SE))
+      NotAffine = true; // e.g. a loaded value
+  };
+
+  if (auto *SI = dyn_cast<SwitchInst>(Term)) {
+    // A switch is an implicit icmp eq of its condition against each
+    // (constant) case value.
+    CheckOperand(SI->getCondition());
+  } else if (auto *Br = dyn_cast<BranchInst>(Term); Br && Br->isConditional()) {
+    // Split logical and/or (`a && b` is lowered to `select a, b, false`) and
+    // look through `not` (xor true) and freeze, down to the leaf conditions.
+    SmallVector<Value *, 4> Work{Br->getCondition()};
+    while (!Work.empty()) {
+      Value *V = Work.pop_back_val();
+      Value *A, *B;
+      if (match(V, m_LogicalAnd(m_Value(A), m_Value(B))) ||
+          match(V, m_LogicalOr(m_Value(A), m_Value(B)))) {
+        Work.push_back(A);
+        Work.push_back(B);
+      } else if (match(V, m_Not(m_Value(A)))) {
+        Work.push_back(A);
+      } else if (auto *Fr = dyn_cast<FreezeInst>(V)) {
+        Work.push_back(Fr->getOperand(0));
+      } else if (auto *Cmp = dyn_cast<ICmpInst>(V)) {
+        // icmp operands are integers or pointers, always SCEVable.
+        for (Value *Op : Cmp->operands())
+          CheckOperand(Op);
+      } else if (!L.isLoopInvariant(V)) {
+        NonICmp = true; // fcmp, or an i1 that is not a compare
+      }
     }
   }
-
-  bool SawNonICmp = false;
-  for (Value *Leaf : Leaves) {
-    if (auto *Cmp = dyn_cast<ICmpInst>(Leaf)) {
-      // icmp operands are integers or pointers, always SCEVable.
-      for (Value *Op : Cmp->operands())
-        if (!isAffineOrInvariant(SE.getSCEV(Op), L, SE))
-          return "exit-cond-not-affine"; // e.g. a loaded value
-    } else if (!L.isLoopInvariant(Leaf)) {
-      SawNonICmp = true; // fcmp, or an i1 that is not a compare
-    }
-  }
-  return SawNonICmp ? "exit-cond-not-icmp" : "other";
+  if (NotAffine)
+    return "exit-cond-not-affine";
+  if (NonICmp)
+    return "exit-cond-not-icmp";
+  return "other";
 }
 
 TripFacts makeTripFacts(const Loop &L, ScalarEvolution &SE) {
@@ -133,19 +152,29 @@ const char *tripKindName(TripKind K) {
 } // namespace
 
 LoopRecord makeLoopRecord(const Function &F, const Loop &L,
-                          ModuleSlotTracker &MST, ScalarEvolution &SE) {
+                          std::unique_ptr<ModuleSlotTracker> &MST,
+                          ScalarEvolution &SE) {
   LoopRecord R;
   R.Function = F.getName().str();
   R.Depth = L.getLoopDepth();
 
-  // Unnamed blocks print as their slot number ("%1"), the same form
-  // `opt -passes='print<loops>'` uses.
+  // Header as an IR operand, always with '%' ("%for.body", "%1"): the form
+  // print<loops> uses and the one inside SCEV text ("<%for.body>").
   const BasicBlock *H = L.getHeader();
+  raw_string_ostream HOS(R.Header);
   if (H->hasName()) {
-    R.Header = H->getName().str();
+    HOS << '%';
+    printLLVMNameWithoutPrefix(HOS, H->getName()); // quotes odd names
   } else {
-    raw_string_ostream OS(R.Header);
-    H->printAsOperand(OS, /*PrintType=*/false, MST);
+    // Unnamed blocks need slot numbers. Build the tracker only on first use
+    // and without module-wide metadata, so modules without unnamed headers
+    // pay nothing and the cost is not O(#functions x module size).
+    if (!MST) {
+      MST = std::make_unique<ModuleSlotTracker>(
+          F.getParent(), /*ShouldInitializeAllMetadata=*/false);
+      MST->incorporateFunction(F);
+    }
+    H->printAsOperand(HOS, /*PrintType=*/false, *MST);
   }
 
   // Loop::getStartLoc() is the location LoopVectorize puts in its remarks, so
