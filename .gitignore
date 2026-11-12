@@ -1,0 +1,15 @@
+build/
+*.o
+*.so
+.cache/
+compile_commands.json
+*.swp
+*.swo
+*~
+.DS_Store
+__pycache__/
+*.pyc
+results/raw/
+bench/polybench/
+bench/tsvc/
+CLAUDE.local.md

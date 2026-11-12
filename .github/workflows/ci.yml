@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    env:
+      LLVM_VERSION: "20"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LLVM ${{ env.LLVM_VERSION }} from Ubuntu noble-updates
+        run: |
+          # Same packages as the dev laptop (see DECISIONS.md, 2026-11-12).
+          # -dev: headers + LLVMConfig.cmake; -tools: FileCheck, not, lit
+          # libpolly-dev: LLVMConfig.cmake references Polly targets
+          sudo apt-get update
+          sudo apt-get install -y -t noble-updates llvm-${LLVM_VERSION} llvm-${LLVM_VERSION}-dev \
+            llvm-${LLVM_VERSION}-tools libpolly-${LLVM_VERSION}-dev clang-${LLVM_VERSION} \
+            zlib1g-dev libzstd-dev ninja-build cmake
+          /usr/lib/llvm-${LLVM_VERSION}/bin/opt --version
+
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DLOOPLENS_LLVM_VERSION=${LLVM_VERSION}
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test (lit + FileCheck)
+        run: cmake --build build --target check

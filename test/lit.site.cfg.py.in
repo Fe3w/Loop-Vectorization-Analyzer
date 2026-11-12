@@ -1,0 +1,9 @@
+# Filled in by CMake (configure_file). Do not edit the generated copy.
+import os
+
+config.llvm_tools_dir = "@LOOPLENS_LLVM_TOOLS_DIR@"
+config.looplens_plugin_dir = "@LOOPLENS_PLUGIN_DIR@"
+config.looplens_src_root = "@CMAKE_SOURCE_DIR@"
+config.looplens_obj_root = "@CMAKE_BINARY_DIR@"
+
+lit_config.load_config(config, os.path.join(config.looplens_src_root, "test", "lit.cfg.py"))
