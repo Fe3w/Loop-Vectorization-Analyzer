@@ -9,10 +9,12 @@
 #include "llvm/IR/DebugLoc.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/PatternMatch.h"
 #include "llvm/IR/ModuleSlotTracker.h"
 #include "llvm/Support/raw_ostream.h"
 
 using namespace llvm;
+using namespace llvm::PatternMatch;
 
 namespace looplens {
 
@@ -26,30 +28,66 @@ std::string scevStr(const SCEV *S) {
   return Str;
 }
 
-// Why ScalarEvolution could not compute the exact BTC. Coarse, structural
-// reasons, first match wins; the precise blocker is the classifier's job.
+// True if S is something SCEV can reason about in L's exit condition:
+// loop-invariant, or an AFFINE add-recurrence {a,+,b} of L. Integer casts are
+// looked through: an affine IV under a sext/zext that SCEV could not fold is
+// still affine (whether it may wrap is the predicate question, asked first).
+bool isAffineOrInvariant(const SCEV *S, const Loop &L, ScalarEvolution &SE) {
+  while (auto *Cast = dyn_cast<SCEVCastExpr>(S))
+    S = Cast->getOperand(0);
+  if (SE.isLoopInvariant(S, &L))
+    return true;
+  auto *AR = dyn_cast<SCEVAddRecExpr>(S);
+  return AR && AR->getLoop() == &L && AR->isAffine();
+}
+
+// Why ScalarEvolution could not compute the exact BTC. A closed list, first
+// match wins; precise blockers and evidence are the classifier's job (S08+).
+// Assumes canonical input (loop-simplify/LCSSA/rotate, as LoopVectorize sees
+// it): loop shape is reported elsewhere and is not a reason here.
 std::string unknownTripReason(const Loop &L, ScalarEvolution &SE) {
-  // Without a preheader / single latch SCEV builds no add-recurrences at all.
-  if (!L.isLoopSimplifyForm())
-    return "not-simplify-form";
   BasicBlock *Exiting = L.getExitingBlock();
   if (!Exiting)
     return "multiple-exits";
-  // Single exit: is the exit condition built from values SCEV can describe
-  // (loop-invariant, or an add-recurrence of this loop)? A loaded value is
-  // neither -> data-dependent exit.
+
+  // Computable once SCEV may assume no-wrap (or similar) predicates, which a
+  // runtime check can guarantee; LoopVectorize asks the same question via
+  // PredicatedScalarEvolution.
+  SmallVector<const SCEVPredicate *, 4> Preds;
+  if (!isa<SCEVCouldNotCompute>(SE.getPredicatedBackedgeTakenCount(&L, Preds)))
+    return "needs-scev-predicate";
+
   auto *Br = dyn_cast<BranchInst>(Exiting->getTerminator());
-  if (Br && Br->isConditional())
-    if (auto *Cmp = dyn_cast<ICmpInst>(Br->getCondition()))
-      for (Value *Op : Cmp->operands()) {
-        if (!SE.isSCEVable(Op->getType()))
-          return "exit-cond-not-affine";
-        const SCEV *S = SE.getSCEV(Op);
-        auto *AR = dyn_cast<SCEVAddRecExpr>(S);
-        if (!SE.isLoopInvariant(S, &L) && !(AR && AR->getLoop() == &L))
-          return "exit-cond-not-affine";
-      }
-  return "other";
+  if (!Br || !Br->isConditional())
+    return "other";
+
+  // Split logical and/or (`a && b` is lowered to `select a, b, false`) into
+  // their leaf conditions.
+  SmallVector<Value *, 4> Work{Br->getCondition()}, Leaves;
+  while (!Work.empty()) {
+    Value *V = Work.pop_back_val();
+    Value *A, *B;
+    if (match(V, m_LogicalAnd(m_Value(A), m_Value(B))) ||
+        match(V, m_LogicalOr(m_Value(A), m_Value(B)))) {
+      Work.push_back(A);
+      Work.push_back(B);
+    } else {
+      Leaves.push_back(V);
+    }
+  }
+
+  bool SawNonICmp = false;
+  for (Value *Leaf : Leaves) {
+    if (auto *Cmp = dyn_cast<ICmpInst>(Leaf)) {
+      // icmp operands are integers or pointers, always SCEVable.
+      for (Value *Op : Cmp->operands())
+        if (!isAffineOrInvariant(SE.getSCEV(Op), L, SE))
+          return "exit-cond-not-affine"; // e.g. a loaded value
+    } else if (!L.isLoopInvariant(Leaf)) {
+      SawNonICmp = true; // fcmp, or an i1 that is not a compare
+    }
+  }
+  return SawNonICmp ? "exit-cond-not-icmp" : "other";
 }
 
 TripFacts makeTripFacts(const Loop &L, ScalarEvolution &SE) {
@@ -65,16 +103,15 @@ TripFacts makeTripFacts(const Loop &L, ScalarEvolution &SE) {
   if (isa<SCEVCouldNotCompute>(BTC)) {
     T.Kind = TripKind::Unknown;
     T.Reason = unknownTripReason(L, SE);
-  } else if (isa<SCEVConstant>(BTC)) {
+  } else if (auto *C = dyn_cast<SCEVConstant>(BTC)) {
     T.Kind = TripKind::Constant;
-    // Trip count = BTC + 1 in a type one bit wider, so BTC = 2^N - 1 does
-    // not wrap to 0.
-    const SCEV *TC = SE.getTripCountFromExitCount(BTC);
-    if (auto *C = dyn_cast<SCEVConstant>(TC)) {
-      T.Count.clear();
-      raw_string_ostream OS(T.Count);
-      C->getAPInt().print(OS, /*isSigned=*/false);
-    }
+    // Trip count = BTC + 1, computed one bit wider so BTC = 2^N - 1 does not
+    // wrap to 0. Done on the APInt directly, so Constant always has a count.
+    const APInt &B = C->getAPInt();
+    APInt TC = B.zext(B.getBitWidth() + 1) + 1;
+    T.Count.clear();
+    raw_string_ostream OS(T.Count);
+    TC.print(OS, /*isSigned=*/false);
   } else {
     T.Kind = TripKind::Symbolic;
   }

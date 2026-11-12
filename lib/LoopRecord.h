@@ -31,8 +31,9 @@ enum class TripKind { Constant, Symbolic, Unknown };
 struct TripFacts {
   TripKind Kind = TripKind::Unknown;
   std::string Count = "none"; // exact trip count, only for Constant
-  std::string Reason;         // only for Unknown: not-simplify-form |
-                              // multiple-exits | exit-cond-not-affine | other
+  std::string Reason;         // only for Unknown: multiple-exits |
+                              // needs-scev-predicate | exit-cond-not-affine |
+                              // exit-cond-not-icmp | other
   std::string BTC, MaxBTC, SymMaxBTC;
 };
 

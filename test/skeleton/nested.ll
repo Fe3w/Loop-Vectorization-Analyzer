@@ -4,7 +4,9 @@
 
 ; CHECK-LABEL: looplens: function 'nested'
 ; CHECK-NEXT:  loop header=outer depth=1 loc=<none>{{$}}
-; CHECK:       loop header=inner depth=2 loc=<none>{{$}}
+; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + (1 smax %n))<nsw>] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + (1 smax %n))<nsw>]{{$}}
+; CHECK-NEXT:  loop header=inner depth=2 loc=<none>{{$}}
+; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + (1 smax %n))<nsw>] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + (1 smax %n))<nsw>]{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @nested(ptr %a, i64 %n) {

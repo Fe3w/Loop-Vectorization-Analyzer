@@ -1,5 +1,7 @@
-; Unknown trip count because the loop has no preheader (two predecessors outside
-; the loop): ScalarEvolution builds no add-recurrence, so nothing is computable.
+; Unknown trip count: the two predecessors outside the loop bring DIFFERENT start
+; values (0 and 1), so the header phi has no single start and is not an
+; add-recurrence; %i.next in the exit compare is then not affine. (A missing
+; preheader alone is fine: see no-preheader-same-start.ll.)
 ; Hand-written; must not be run through loop-simplify (that would add a preheader).
 ;
 ; RUN: opt -load-pass-plugin=%shlibdir/LoopLens%shlibext \
@@ -7,7 +9,7 @@
 
 ; CHECK-LABEL: looplens: function 'nopre'
 ; CHECK-NEXT:  loop header=loop depth=1 loc=<none>{{$}}
-; CHECK-NEXT:  trip kind=unknown reason=not-simplify-form count=none btc=[***COULDNOTCOMPUTE***] max-btc=[***COULDNOTCOMPUTE***] symbolic-max-btc=[***COULDNOTCOMPUTE***]{{$}}
+; CHECK-NEXT:  trip kind=unknown reason=exit-cond-not-affine count=none btc=[***COULDNOTCOMPUTE***] max-btc=[***COULDNOTCOMPUTE***] symbolic-max-btc=[***COULDNOTCOMPUTE***]{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @nopre(ptr %a, i64 %n, i1 %b) {

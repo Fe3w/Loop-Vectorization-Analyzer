@@ -39,8 +39,17 @@ looplens: function 'saxpy'
   `count`), `symbolic` or `unknown`; `btc` is the backedge-taken count
   (trip count − 1), followed by its constant and symbolic upper bounds, as SCEV
   text in brackets (`***COULDNOTCOMPUTE***` when unknown). Unknown loops carry a
-  coarse `reason`: `not-simplify-form`, `multiple-exits`,
-  `exit-cond-not-affine` (e.g. the exit tests a loaded value) or `other`.
+  coarse `reason`, first match wins: `multiple-exits`; `needs-scev-predicate`
+  (computable once SCEV may assume e.g. no-wrap, which a runtime check can
+  guarantee); `exit-cond-not-affine` (an exit-compare operand, looking through
+  `&&`/`||` and integer casts, is neither loop-invariant nor an affine
+  recurrence of the loop — e.g. a loaded value); `exit-cond-not-icmp` (e.g. a
+  floating-point compare); `other`.
+
+Input should be in the canonical form LoopVectorize sees (loop-simplify, LCSSA,
+rotated; the recipe above produces it). LoopLens is an analysis and never
+changes the IR, so it does not canonicalise loops itself; on other input its
+facts describe the IR as given.
 
 ## Layout
 

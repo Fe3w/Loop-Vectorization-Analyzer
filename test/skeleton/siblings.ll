@@ -4,7 +4,9 @@
 
 ; CHECK-LABEL: looplens: function 'siblings'
 ; CHECK-NEXT:  loop header=first depth=1 loc=<none>{{$}}
-; CHECK:       loop header=second depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + (1 smax %n))<nsw>] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + (1 smax %n))<nsw>]{{$}}
+; CHECK-NEXT:  loop header=second depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + (1 smax %n))<nsw>] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + (1 smax %n))<nsw>]{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @siblings(ptr %a, i64 %n) {
