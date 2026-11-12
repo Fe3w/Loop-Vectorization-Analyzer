@@ -4,7 +4,7 @@
 
 ; CHECK-LABEL: looplens: function 'siblings'
 ; CHECK-NEXT:  loop header=first depth=1 loc=<none>{{$}}
-; CHECK-NEXT:  loop header=second depth=1 loc=<none>{{$}}
+; CHECK:       loop header=second depth=1 loc=<none>{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @siblings(ptr %a, i64 %n) {

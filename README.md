@@ -25,15 +25,22 @@ clang-20 -O1 -g -fno-discard-value-names -Xclang -disable-llvm-passes -emit-llvm
 opt-20 -load-pass-plugin=build/lib/LoopLens.so -passes=looplens-analyze -disable-output foo.ll
 ```
 
-Output is one line per loop, outer before inner:
+Output is one block per loop, outer before inner:
 
 ```
 looplens: function 'saxpy'
   loop header=for.body depth=1 loc=saxpy.c:2:3
+    trip kind=symbolic count=none btc=[(-1 + %n)] max-btc=[2147483646] symbolic-max-btc=[(-1 + %n)]
 ```
 
-`loc=` is `Loop::getStartLoc()`, the same location LLVM's loop-vectorize remarks
-use (`loc=<none>` without debug info).
+- `loc=` is `Loop::getStartLoc()`, the same location LLVM's loop-vectorize remarks
+  use (`loc=<none>` without debug info).
+- `trip` comes from ScalarEvolution. `kind` is `constant` (with the exact
+  `count`), `symbolic` or `unknown`; `btc` is the backedge-taken count
+  (trip count − 1), followed by its constant and symbolic upper bounds, as SCEV
+  text in brackets (`***COULDNOTCOMPUTE***` when unknown). Unknown loops carry a
+  coarse `reason`: `not-simplify-form`, `multiple-exits`,
+  `exit-cond-not-affine` (e.g. the exit tests a loaded value) or `other`.
 
 ## Layout
 

@@ -16,7 +16,7 @@
 ; CHECK-NOT:   warning:
 ; CHECK-LABEL: looplens: function 'nest'
 ; CHECK-NEXT:  loop header=for.body depth=1 loc=nest.c:2:3{{$}}
-; CHECK-NEXT:  loop header=for.body4 depth=2 loc=nest.c:3:5{{$}}
+; CHECK:       loop header=for.body4 depth=2 loc=nest.c:3:5{{$}}
 ; CHECK-NOT:   loop header=
 
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
