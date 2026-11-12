@@ -3,8 +3,8 @@
 ; RUN:   -passes=looplens-analyze -disable-output %s 2>&1 | FileCheck %s
 
 ; CHECK-LABEL: looplens: function 'siblings'
-; CHECK-NEXT:  loop header=first depth=1
-; CHECK-NEXT:  loop header=second depth=1
+; CHECK-NEXT:  loop header=first depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=second depth=1 loc=<none>{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @siblings(ptr %a, i64 %n) {

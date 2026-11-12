@@ -1,8 +1,8 @@
 //===- LoopLensAnalyze.cpp - Explain missed loop vectorization -----------===//
 //
-// Week 1 skeleton: a new-pass-manager *function* pass that visits every loop
-// and prints its header name and nesting depth. Later weeks add SCEV, LAA and
-// the classifier on top of this loop walk.
+// A new-pass-manager *function* pass that visits every loop, builds a
+// LoopRecord (header, depth, source location) and prints one line per loop.
+// Trip counts, memory facts and the blocker classifier build on this walk.
 //
 // Usage:
 //   opt -load-pass-plugin=build/lib/LoopLens.so \
@@ -11,6 +11,8 @@
 // API notes (LLVM 20): PassPlugin / registerPipelineParsingCallback /
 // LoopInfo::getLoopsInPreorder are unchanged from LLVM 15 through 20.
 //===----------------------------------------------------------------------===//
+
+#include "LoopRecord.h"
 
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/IR/Function.h"
@@ -35,8 +37,7 @@ struct LoopLensAnalyze : PassInfoMixin<LoopLensAnalyze> {
     // Preorder: outer loop before its inner loops, siblings in program
     // order, so test output is deterministic.
     for (Loop *L : LI.getLoopsInPreorder())
-      errs() << "  loop header=" << L->getHeader()->getName()
-             << " depth=" << L->getLoopDepth() << "\n";
+      looplens::printLoopRecord(errs(), looplens::makeLoopRecord(F, *L));
 
     // Analysis-only pass: nothing changed, every analysis stays valid.
     return PreservedAnalyses::all();

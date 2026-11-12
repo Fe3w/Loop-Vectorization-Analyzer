@@ -2,6 +2,7 @@
 # contains LLVM, so we do NOT link LLVM libraries into the plugin.
 add_library(LoopLens MODULE
   LoopLensAnalyze.cpp
+  LoopRecord.cpp
 )
 
 # Produce build/lib/LoopLens.so (no "lib" prefix), matching the lit tests.

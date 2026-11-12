@@ -3,8 +3,8 @@
 ; RUN:   -passes=looplens-analyze -disable-output %s 2>&1 | FileCheck %s
 
 ; CHECK-LABEL: looplens: function 'nested'
-; CHECK-NEXT:  loop header=outer depth=1
-; CHECK-NEXT:  loop header=inner depth=2
+; CHECK-NEXT:  loop header=outer depth=1 loc=<none>{{$}}
+; CHECK-NEXT:  loop header=inner depth=2 loc=<none>{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @nested(ptr %a, i64 %n) {

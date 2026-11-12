@@ -19,10 +19,21 @@ cmake --build build --target check     # runs lit + FileCheck tests
 ## Run on your own code
 
 ```bash
-clang-20 -O1 -g -Xclang -disable-llvm-passes -emit-llvm -S foo.c -o foo.ll
-opt-20 -load-pass-plugin=build/lib/LoopLens.so \
-  -passes='function(loop-simplify,lcssa),looplens-analyze' -disable-output foo.ll
+# Canonical IR: what LoopVectorize sees (rotated, LCSSA, loop-simplify form).
+clang-20 -O1 -g -fno-discard-value-names -Xclang -disable-llvm-passes -emit-llvm -S foo.c -o - \
+  | opt-20 -passes='sroa,loop-simplify,lcssa,loop(loop-rotate)' -S -o foo.ll
+opt-20 -load-pass-plugin=build/lib/LoopLens.so -passes=looplens-analyze -disable-output foo.ll
 ```
+
+Output is one line per loop, outer before inner:
+
+```
+looplens: function 'saxpy'
+  loop header=for.body depth=1 loc=saxpy.c:2:3
+```
+
+`loc=` is `Loop::getStartLoc()`, the same location LLVM's loop-vectorize remarks
+use (`loc=<none>` without debug info).
 
 ## Layout
 
