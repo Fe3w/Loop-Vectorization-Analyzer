@@ -16,6 +16,7 @@
 
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/IR/Function.h"
+#include "llvm/IR/ModuleSlotTracker.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
@@ -36,8 +37,12 @@ struct LoopLensAnalyze : PassInfoMixin<LoopLensAnalyze> {
     errs() << "looplens: function '" << F.getName() << "'\n";
     // Preorder: outer loop before its inner loops, siblings in program
     // order, so test output is deterministic.
+    // One slot tracker per function: unnamed headers print as %N without
+    // renumbering the module for every loop.
+    ModuleSlotTracker MST(F.getParent());
+    MST.incorporateFunction(F);
     for (Loop *L : LI.getLoopsInPreorder())
-      looplens::printLoopRecord(errs(), looplens::makeLoopRecord(F, *L));
+      looplens::printLoopRecord(errs(), looplens::makeLoopRecord(F, *L, MST));
 
     // Analysis-only pass: nothing changed, every analysis stays valid.
     return PreservedAnalyses::all();

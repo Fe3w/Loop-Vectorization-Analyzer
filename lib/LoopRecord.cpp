@@ -6,13 +6,15 @@
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/DebugLoc.h"
 #include "llvm/IR/Function.h"
+#include "llvm/IR/ModuleSlotTracker.h"
 #include "llvm/Support/raw_ostream.h"
 
 using namespace llvm;
 
 namespace looplens {
 
-LoopRecord makeLoopRecord(const Function &F, const Loop &L) {
+LoopRecord makeLoopRecord(const Function &F, const Loop &L,
+                          ModuleSlotTracker &MST) {
   LoopRecord R;
   R.Function = F.getName().str();
   R.Depth = L.getLoopDepth();
@@ -24,7 +26,7 @@ LoopRecord makeLoopRecord(const Function &F, const Loop &L) {
     R.Header = H->getName().str();
   } else {
     raw_string_ostream OS(R.Header);
-    H->printAsOperand(OS, /*PrintType=*/false);
+    H->printAsOperand(OS, /*PrintType=*/false, MST);
   }
 
   // Loop::getStartLoc() is the location LoopVectorize puts in its remarks, so
@@ -33,6 +35,7 @@ LoopRecord makeLoopRecord(const Function &F, const Loop &L) {
   // mentions the last two): LoopID's first DILocation -> preheader terminator
   // -> header terminator.
   if (DebugLoc DL = L.getStartLoc()) {
+    R.HasLoc = true;
     R.File = DL->getFilename().str(); // file name only, like remark YAML
     R.Line = DL.getLine();
     R.Col = DL.getCol();
