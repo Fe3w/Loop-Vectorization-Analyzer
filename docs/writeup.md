@@ -70,6 +70,11 @@ the same loop. The method is in [methodology.md](methodology.md); every row is i
 The second metric, whether *all* of LoopVectorize's reasons are among LoopLens's categories, gives
 the same counts: every remaining miss is a cost-model verdict for which LoopLens has no category.
 
+![Why LLVM did not vectorize](../results/plots/blockers.svg)
+
+The figure above breaks the loops LoopVectorize missed down by its first reason, per target and suite
+(`lv_category` in `results/*agreement.csv`).
+
 ![TSVC before and after tuning](../results/plots/tsvc_before_after.svg)
 
 TSVC's first, untuned run agreed on 148 of 155 matched loops

@@ -4,8 +4,8 @@
 
 - Repository renamed to `Loop-Vectorization-Analyzer` (was `looplens`; GitHub redirects the old URL).
   Internal names are unchanged: `LoopLens.so`, `looplens-analyze`, `looplens-repair`, `-looplens-*`.
-- README rewritten: results first, findings table, figures; the detailed usage and output format moved
-  to `docs/reference.md`.
+- README rewritten: how it works, key results, comparisons, findings, worked example, limitations;
+  setup and usage moved to `docs/setup.md`, options and output format to `docs/reference.md`.
 - Figures redrawn and extended (`scripts/plots.py`): results tiles, agreement split by LLVM's reason,
   why LLVM missed each loop, speedup with run spread, GCC comparison, the LLVM 20 interchange bug;
   architecture diagram `docs/img/pipeline.svg`.
