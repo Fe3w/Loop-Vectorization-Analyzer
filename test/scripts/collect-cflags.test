@@ -1,0 +1,8 @@
+# collect.sh --cflags: extra compiler flags (another target or -march) reach clang
+# and are recorded in toolchain.txt.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: bash %S/../../scripts/collect.sh --bench %S/Inputs/fakebench --out %t/raw \
+# RUN:   --plugin %shlibdir/LoopLens%shlibext --list %S/Inputs/only-beta.list \
+# RUN:   --cflags "-march=x86-64-v4 -DFAKE_EXTRA=1"
+# RUN: FileCheck %s < %t/raw/toolchain.txt
+# CHECK: extra flags: -march=x86-64-v4 -DFAKE_EXTRA=1

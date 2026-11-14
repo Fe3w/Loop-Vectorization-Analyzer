@@ -20,7 +20,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y -t noble-updates llvm-${LLVM_VERSION} llvm-${LLVM_VERSION}-dev \
             llvm-${LLVM_VERSION}-tools libpolly-${LLVM_VERSION}-dev clang-${LLVM_VERSION} \
-            zlib1g-dev libzstd-dev ninja-build cmake
+            zlib1g-dev libzstd-dev ninja-build cmake python3-yaml
+          # clang-20: test/clang/*.c run LoopLens inside clang;
+          # python3-yaml: test/scripts/* run scripts/agreement.py.
           /usr/lib/llvm-${LLVM_VERSION}/bin/opt --version
 
       - name: Configure

@@ -1,0 +1,10 @@
+# collect.sh --list: compile the files named in another list (TSVC is one file,
+# not PolyBench's utilities/benchmark_list layout).
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: bash %S/../../scripts/collect.sh --bench %S/Inputs/fakebench --out %t/raw \
+# RUN:   --plugin %shlibdir/LoopLens%shlibext --list %S/Inputs/only-beta.list
+# RUN: FileCheck %s < %t/raw/manifest.csv
+
+# CHECK:      kernel,path,exit,seconds,jsonl_lines,yaml_bytes
+# CHECK-NEXT: beta,k/beta/beta.c,0,
+# CHECK-NOT:  alpha

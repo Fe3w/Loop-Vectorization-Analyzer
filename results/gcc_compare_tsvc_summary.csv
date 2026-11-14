@@ -1,0 +1,12 @@
+suite,group,loops,gcc_vectorized,gcc_missed_same_category,gcc_missed_other_category,gcc_no_verdict
+tsvc,all,178,80,17,78,3
+tsvc,llvm-vectorized,73,60,0,13,0
+tsvc,llvm-missed,105,20,17,65,3
+tsvc,looplens:aliasing,1,0,0,1,0
+tsvc,looplens:call-or-unsafe-memop,9,0,1,8,0
+tsvc,looplens:control-flow,3,0,1,0,2
+tsvc,looplens:loop-carried-dependence,8,0,0,8,0
+tsvc,looplens:none,9,1,0,8,0
+tsvc,looplens:reduction,62,15,15,32,0
+tsvc,looplens:stride,12,4,0,8,0
+tsvc,looplens:trip-count,1,0,0,0,1

@@ -1,0 +1,5 @@
+# --prefix names the output files (TSVC results live next to PolyBench's).
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/attr --out %t --prefix tsvc_
+# RUN: test -s %t/tsvc_agreement.csv && test -s %t/tsvc_agreement_summary.csv
+# RUN: not test -e %t/agreement.csv

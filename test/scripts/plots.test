@@ -1,0 +1,26 @@
+# scripts/plots.py: SVG plots from the CSVs in a results directory, nothing else.
+# RUN: rm -rf %t && mkdir -p %t/a %t/b
+# RUN: %python %S/../../scripts/plots.py %S/Inputs/plots --out %t/a > %t/a.log
+# RUN: FileCheck --check-prefix=AGREE %s < %t/a/agreement.svg
+# RUN: FileCheck --check-prefix=TSVC %s < %t/a/tsvc_before_after.svg
+# RUN: FileCheck --check-prefix=LOG %s < %t/a.log
+# RUN: not test -e %t/a/speedup.svg
+# Targets without a summary file (x86-64-v4 here) are left out, not drawn as zero.
+# AGREE: <svg
+# AGREE: x86-64 (generic)
+# AGREE: 9 / 10
+# AGREE: 8 / 10
+# AGREE: 15 / 20
+# AGREE: AArch64
+# AGREE: 5 / 10
+# AGREE-NOT: x86-64-v4
+# TSVC: 12 / 16
+# TSVC: 15 / 20
+# LOG: timing.csv not found: speedup plot skipped
+# With a timing.csv: speedup = median(base) / median(repair) = 3.0 / 2.0.
+# RUN: %python %S/../../scripts/plots.py %S/Inputs/plots/with-timing --out %t/b
+# RUN: FileCheck --check-prefix=SPEED %s < %t/b/speedup.svg
+# SPEED: TestCPU
+# SPEED: lu
+# SPEED: O3-fast
+# SPEED: 1.50x

@@ -1,0 +1,2 @@
+{"function":"kernel","header":"%a","depth":1,"file":"k5.c","line":4,"col":3,"innermost":true,"primary":"none","rule":"none","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}
+{"function":"main","header":"%b","depth":1,"file":"k5.c","line":4,"col":3,"innermost":true,"primary":"loop-carried-dependence","rule":"mem-unsafe-dep","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}

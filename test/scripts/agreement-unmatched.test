@@ -1,0 +1,10 @@
+# A LoopLens loop without an LLVM per-loop remark: looplens-only, excluded from the percentage.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/unmatched --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+# RUN: FileCheck --check-prefix=SUM %s < %t/agreement_summary.csv
+
+# CSV: k4,k4.c,2,3,f,Vectorized,,none,none,none,,both,yes,yes
+# CSV: k4,k4.c,20,3,f,,,,none,none,,looplens-only,n/a,n/a
+# SUM: loops_both
+# SUM-NEXT: 1,1,100.0,1,100.0,1,0,0,

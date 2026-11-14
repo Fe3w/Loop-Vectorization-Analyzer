@@ -1,0 +1,2 @@
+{"function":"f","header":"%a","depth":1,"file":"k2.c","line":4,"col":3,"innermost":true,"primary":"control-flow","rule":"cfg-unpredicable","secondary":["call-or-unsafe-memop"],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}
+{"function":"f","header":"%b","depth":1,"file":"k2.c","line":9,"col":3,"innermost":true,"primary":"none","rule":"none","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}

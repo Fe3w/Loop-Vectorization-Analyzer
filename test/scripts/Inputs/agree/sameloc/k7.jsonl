@@ -1,0 +1,2 @@
+{"function":"f","header":"%a","depth":2,"file":"k7.c","line":5,"col":9,"innermost":true,"primary":"none","rule":"none","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}
+{"function":"f","header":"%b","depth":2,"file":"k7.c","line":5,"col":9,"innermost":true,"primary":"stride","rule":"cost-strided","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}

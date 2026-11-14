@@ -1,0 +1,7 @@
+file,line,function,looplens_legal,looplens_why,dirs,llvm,agree
+tsvc.c,1141,s1232,yes,,(=;=),refused-dependences,no
+tsvc.c,1168,s233,unknown,not-perfect-nest,,none,yes
+tsvc.c,1602,s257,unknown,not-perfect-nest,,refused-dependences,yes
+tsvc.c,1804,s2275,unknown,not-perfect-nest,,refused-dependences,yes
+tsvc.c,2187,s2101,unknown,not-perfect-nest,,refused-dependences,yes
+tsvc.c,2210,s2102,unknown,not-perfect-nest,,refused-dependences,yes

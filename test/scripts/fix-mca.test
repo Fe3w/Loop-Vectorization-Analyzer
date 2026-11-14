@@ -1,0 +1,16 @@
+# scripts/fix_mca.py on three fix examples: hint-vectorize-disabled (before
+# scalar, after vectorized width 4), call-opaque (the before loop calls an
+# opaque function: llvm-mca cannot price the call, so no ratio) and
+# recur-unsupported (no after.c). No
+# exact cycle counts are checked: they depend on the LLVM build's scheduling
+# model; only shape and sign.
+# RUN: %python %S/../../scripts/fix_mca.py --examples %S/Inputs/mca/fixes --plugin %shlibdir/LoopLens%shlibext --out %t.csv | FileCheck --check-prefix=SUM %s
+# RUN: FileCheck %s < %t.csv
+# CHECK: example,rule,variant,vectorized,elements_per_iter,instructions,block_rthroughput,cycles_per_element,has_call,mcpu,loop,estimated_speedup
+# CHECK-NEXT: call-opaque,call-no-vector-form,before,no,1,{{[0-9]+}},{{[0-9.]+}},{{[0-9.]+}},yes,x86-64,found,
+# CHECK-NEXT: call-opaque,call-no-vector-form,after,yes,4,{{[0-9]+}},{{[0-9.]+}},{{[0-9.]+}},no,x86-64,found,n/a
+# CHECK-NEXT: hint-vectorize-disabled,hint-vectorize-disabled,before,no,1,{{[1-9][0-9]*}},{{[0-9.]+}},{{[0-9.]+}},no,x86-64,found,
+# CHECK-NEXT: hint-vectorize-disabled,hint-vectorize-disabled,after,yes,4,{{[1-9][0-9]*}},{{[0-9.]+}},{{[0-9.]+}},no,x86-64,found,{{[0-9]+\.[0-9]+}}
+# CHECK-NEXT: recur-unsupported,recur-unsupported,before,no,1,{{[1-9][0-9]*}},{{[0-9.]+}},{{[0-9.]+}},no,x86-64,found,
+# CHECK-NOT: recur-unsupported,{{.*}},after
+# SUM: examples: 3, with an after row: 2

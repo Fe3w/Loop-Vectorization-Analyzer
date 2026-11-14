@@ -1,0 +1,7 @@
+Ubuntu clang version 20.1.2 (0ubuntu1~24.04.3)
+Ubuntu LLVM version 20.1.2
+extra flags: -march=x86-64-v4
+flags: -O3 -g -march=x86-64-v4 -I <bench>/utilities -I <kernel dir> -fsave-optimization-record
+plugin: -fpass-plugin=LoopLens.so -Xclang -load -Xclang LoopLens.so -mllvm -looplens-text=false
+host-cpu: emeraldrapids
+date: 2026-11-14T04:16:44Z

@@ -1,0 +1,15 @@
+example,looplens_rule_before,lv_vectorized_before,fix_flags,lv_vectorized_after,fix_verified
+call-math-lib,call-no-vector-form,no,-fno-math-errno,yes,yes
+call-opaque,call-no-vector-form,no,,yes,yes
+cfg-uncountable-early-exit,cfg-uncountable-early-exit,no,,yes,yes
+cfg-unpredicable,cfg-unpredicable,no,,yes,yes
+cost-strided,cost-strided,no,,yes,yes
+hint-vectorize-disabled,hint-vectorize-disabled,no,,yes,yes
+mem-call-writes,mem-call-writes,no,-fveclib=libmvec -fno-math-errno,yes,yes
+mem-no-runtime-check,mem-no-runtime-check,no,,yes,yes
+mem-non-simple,mem-non-simple,no,,yes,yes
+mem-unsafe-dep,mem-unsafe-dep,no,,yes,yes
+recur-unsupported,recur-unsupported,no,,n/a,no automatic fix
+red-exact-fp,red-exact-fp,no,,yes,yes
+stride-gather,stride-gather,no,-march=x86-64-v4,yes,yes
+trip-uncountable,trip-uncountable,no,,yes,yes

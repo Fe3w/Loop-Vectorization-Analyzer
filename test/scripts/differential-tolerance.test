@@ -1,0 +1,13 @@
+# differential.sh --compare: the fast-math tolerance fixed in docs/plans/S24.md.
+# A value is within tolerance if its relative error is <= 1e-6, or its absolute
+# error is <= 0.011 and |value| < 1e4 (one unit in the last digit PolyBench prints).
+# RUN: bash %S/../../scripts/differential.sh --compare %S/Inputs/dumps/a.out %S/Inputs/dumps/a.out | FileCheck --check-prefix=SAME %s
+# RUN: bash %S/../../scripts/differential.sh --compare %S/Inputs/dumps/a.out %S/Inputs/dumps/within.out | FileCheck --check-prefix=WITHIN %s
+# RUN: not bash %S/../../scripts/differential.sh --compare %S/Inputs/dumps/a.out %S/Inputs/dumps/off.out | FileCheck --check-prefix=OFF %s
+# RUN: not bash %S/../../scripts/differential.sh --compare %S/Inputs/dumps/a.out %S/Inputs/dumps/short.out | FileCheck --check-prefix=LEN %s
+# SAME: values=4 differing=0 max_abs=0 max_rel=0 within_tolerance=yes
+# 1.00 -> 1.01 is one last-digit unit (abs 0.01); 1000000.00 -> 1000000.50 is rel 5e-07.
+# WITHIN: values=4 differing=2 max_abs=0.5 max_rel=0.0099 within_tolerance=yes
+# 2.50 -> 2.52: abs 0.02, rel 0.0079: outside both bounds.
+# OFF: values=4 differing=1 max_abs=0.02 max_rel=0.00794 within_tolerance=no
+# LEN: length-mismatch

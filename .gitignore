@@ -13,3 +13,6 @@ results/raw/
 bench/polybench/
 bench/tsvc/
 CLAUDE.local.md
+results/raw-tsvc/
+bench/sysroot-aarch64/
+results/raw-*/

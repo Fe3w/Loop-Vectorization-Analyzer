@@ -1,0 +1,19 @@
+# Proof that overlap.test can fail: take the repaired IR and force every call onto
+# the promoted (fast) copy, as if the runtime check were missing. The output must
+# then DIFFER from the -O0 reference (the overlapping calls go wrong). With the
+# check forced the other way (always the original copy) it must be identical.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %looplens_clang -O3 -ffp-contract=off -fno-discard-value-names -mllvm -looplens-repair \
+# RUN:   -S -emit-llvm %S/overlap.c -o %t/rep.ll
+# RUN: grep -c "br i1 %lr.conflict, label %for.body.lr.orig.preheader" %t/rep.ll | FileCheck --check-prefix=N %s
+# RUN: sed 's/br i1 %lr.conflict, label/br i1 false, label/' %t/rep.ll > %t/fast.ll
+# RUN: sed 's/br i1 %lr.conflict, label/br i1 true, label/' %t/rep.ll > %t/slow.ll
+# RUN: clang -O0 -ffp-contract=off %S/overlap.c -o %t/ref && %t/ref > %t/ref.out
+# RUN: clang %t/fast.ll -o %t/fast && %t/fast > %t/fast.out
+# RUN: clang %t/slow.ll -o %t/slow && %t/slow > %t/slow.out
+# RUN: not diff %t/ref.out %t/fast.out > %t/fast.diff
+# RUN: FileCheck --check-prefix=BAD %s < %t/fast.diff
+# RUN: diff %t/ref.out %t/slow.out
+# N: 4
+# The accumulator inside the first range, with the dot kernel, must be among the wrong lines:
+# BAD: > dot r=120

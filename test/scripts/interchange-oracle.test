@@ -1,0 +1,12 @@
+# scripts/interchange_oracle.py joins LoopLens's interchange verdicts (JSON
+# Lines from collect.sh) with LLVM's own loop-interchange remarks for the same
+# file:line, compiled with -mllvm -enable-loopinterchange.
+# RUN: rm -rf %t && mkdir -p %t/raw
+# RUN: %looplens_clang -O3 -g -mllvm -looplens-json=%t/raw/k.jsonl -c %S/Inputs/interchange/k.c -o /dev/null
+# RUN: %python %S/../../scripts/interchange_oracle.py --raw %t/raw --src %S/Inputs/interchange/k.c --out %t/x.csv | FileCheck --check-prefix=SUM %s
+# RUN: FileCheck %s < %t/x.csv
+# CHECK: file,line,function,looplens_legal,looplens_why,dirs,llvm,agree
+# CHECK-DAG: k.c,5,legal_swap,yes,,(=;=),interchanged,yes
+# CHECK-DAG: k.c,10,skew,no,,(<;>),refused-dependences,yes
+# CHECK-DAG: k.c,16,rep,yes,,(=;=),refused-dependences,no
+# SUM: loops with a verdict: 3, LLVM agrees: 2

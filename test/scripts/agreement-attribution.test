@@ -1,0 +1,10 @@
+# Reasons before a per-loop remark belong to that loop only; the first is LV's primary.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/attr --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+# RUN: FileCheck --check-prefix=SUM %s < %t/agreement_summary.csv
+
+# CSV: k2,k2.c,4,3,f,Missed,NoCFGForSelect;CantVectorizeLibcall,control-flow,control-flow,cfg-unpredicable,call-or-unsafe-memop,both,yes,yes
+# CSV-NEXT: k2,k2.c,9,3,f,Vectorized,,none,none,none,,both,yes,yes
+# SUM: loops_both
+# SUM-NEXT: 2,2,100.0,

@@ -1,0 +1,9 @@
+# The same source loop in two functions (a kernel inlined into main, as in
+# PolyBench doitgen): the function is part of the match key, so both copies
+# are matched, each with its own verdict.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/inlined --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+
+# CSV: k5,k5.c,4,3,kernel,Vectorized,,none,none,none,,both,yes,yes
+# CSV: k5,k5.c,4,3,main,Missed,UnsafeDep,loop-carried-dependence,loop-carried-dependence,mem-unsafe-dep,,both,yes,yes

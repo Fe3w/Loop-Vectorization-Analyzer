@@ -1,0 +1,18 @@
+--- !Passed
+Pass:            loop-vectorize
+Name:            Vectorized
+DebugLoc:        { File: 'k5.c', Line: 4, Column: 3 }
+Function:        kernel
+...
+--- !Analysis
+Pass:            loop-vectorize
+Name:            UnsafeDep
+DebugLoc:        { File: 'k5.c', Line: 5, Column: 9 }
+Function:        main
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+DebugLoc:        { File: 'k5.c', Line: 4, Column: 3 }
+Function:        main
+...

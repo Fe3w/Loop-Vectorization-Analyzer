@@ -1,0 +1,36 @@
+name: reproduce
+
+# Rebuilds every committed number from scratch (downloads PolyBench/C 4.2.1 and
+# TSVC_2 with checksums, collects, scores, re-checks codegen and the repair) and
+# fails if any committed result file or the README results block changes.
+# Not on every push: it downloads the benchmarks and takes a few minutes.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 1"   # Mondays 03:17 UTC
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-24.04
+    env:
+      LLVM_VERSION: "20"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LLVM ${{ env.LLVM_VERSION }} (same packages as ci.yml)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y -t noble-updates llvm-${LLVM_VERSION} llvm-${LLVM_VERSION}-dev \
+            llvm-${LLVM_VERSION}-tools libpolly-${LLVM_VERSION}-dev clang-${LLVM_VERSION} \
+            zlib1g-dev libzstd-dev ninja-build cmake python3-yaml bc
+
+      - name: Reproduce
+        run: scripts/reproduce.sh
+
+      - name: Committed results unchanged
+        # toolchain files record the date and host CPU; everything else must match.
+        run: |
+          git status --short
+          git diff --exit-code -- results README.md \
+            ':(exclude)results/*toolchain*.txt' ':(exclude)results/codegen_check.txt' \
+            ':(exclude)results/tsvc_codegen_check.txt'

@@ -1,0 +1,5 @@
+{"function":"f","header":"%a","depth":1,"file":"k6.c","line":3,"col":9,"innermost":true,"primary":"stride","rule":"stride-gather","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}
+{"function":"f","header":"%b","depth":1,"file":"k6.c","line":7,"col":9,"innermost":true,"primary":"loop-carried-dependence","rule":"mem-unsafe-dep","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}
+{"function":"f","header":"%c","depth":1,"file":"k6.c","line":12,"col":9,"innermost":true,"primary":"control-flow","rule":"cfg-uncountable-early-exit","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}
+{"function":"f","header":"%d","depth":1,"file":"k6.c","line":20,"col":9,"innermost":true,"primary":"reduction","rule":"recur-unsupported","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}
+{"function":"f","header":"%e","depth":1,"file":"k6.c","line":30,"col":9,"innermost":true,"primary":"none","rule":"none","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}

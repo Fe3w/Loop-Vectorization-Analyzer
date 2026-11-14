@@ -1,0 +1,26 @@
+# Overlap test (S24): the only test that drives BOTH copies of a repaired loop.
+# overlap.c is built three ways -- clang -O0 (reference), clang -O3, and clang -O3
+# with looplens-repair -- with -ffp-contract=off so the comparison is about the
+# repair, not about fused multiply-add choices. All outputs must be identical byte
+# for byte (values are printed with %a), and the repair must have fired on every
+# kernel (otherwise the test proves nothing).
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: clang -O0 -ffp-contract=off %S/overlap.c -o %t/ref
+# RUN: clang -O3 -ffp-contract=off %S/overlap.c -o %t/o3
+# RUN: %looplens_clang -O3 -g -ffp-contract=off -mllvm -looplens-repair -Rpass=looplens-repair \
+# RUN:   %S/overlap.c -o %t/rep 2> %t/rep.remarks
+# RUN: FileCheck --check-prefix=REM %s < %t/rep.remarks
+# RUN: %t/ref > %t/ref.out
+# RUN: %t/o3 > %t/o3.out
+# RUN: %t/rep > %t/rep.out
+# RUN: diff %t/ref.out %t/o3.out
+# RUN: diff %t/ref.out %t/rep.out
+# RUN: FileCheck --check-prefix=OUT %s < %t/rep.out
+
+# REM-DAG: overlap.c:13:3: remark: versioned loop and promoted the loop-invariant store to a register (2 address ranges
+# REM-DAG: overlap.c:19:3: remark: versioned loop and promoted the loop-invariant store to a register (1 address range
+# REM-DAG: overlap.c:25:3: remark: versioned loop and promoted the loop-invariant store to a register (2 address ranges
+# REM-DAG: overlap.c:31:3: remark: versioned loop and promoted the loop-invariant store to a register (2 address ranges
+
+# 12 accumulator positions x 4 kernels + 2 extra calls = 50 lines.
+# OUT-COUNT-50: {{^(dot|sum|col|max)}}

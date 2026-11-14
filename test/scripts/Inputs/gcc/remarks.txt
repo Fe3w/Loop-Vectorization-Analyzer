@@ -1,0 +1,17 @@
+k/a.c:10:17: missed: couldn't vectorize loop
+k/a.c:10:17: missed: not vectorized: multiple nested loops.
+k/a.c:11:19: optimized: loop vectorized using 16 byte vectors
+k/a.c:11:19: optimized:  loop versioned for vectorization because of possible aliasing
+k/a.c:20:21: missed: couldn't vectorize loop
+k/a.c:21:9: missed: not vectorized: complicated access pattern.
+k/a.c:30:5: missed: couldn't vectorize loop
+k/a.c:30:5: missed: not vectorized: unsupported use in stmt.
+k/a.c:40:5: missed: couldn't vectorize loop
+k/a.c:40:5: missed: not vectorized: some reason GCC 14 might add.
+k/a.c:50:3: missed: statement clobbers memory: x_7 = foo (8);
+k/a.c:60:5: missed: couldn't vectorize loop
+k/a.c:60:5: missed: not vectorized: control flow in loop.
+k/a.c:60:5: optimized: loop vectorized using 8 byte vectors
+k/a.c:70:3: optimized: basic block part vectorized using 16 byte vectors
+k/a.c:100:21: missed: couldn't vectorize loop
+k/a.c:101:9: missed: not vectorized: no vectype for stmt: _2 = a[i_29];

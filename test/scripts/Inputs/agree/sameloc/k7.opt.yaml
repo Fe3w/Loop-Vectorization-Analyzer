@@ -1,0 +1,12 @@
+--- !Passed
+Pass:            loop-vectorize
+Name:            Vectorized
+DebugLoc:        { File: 'k7.c', Line: 5, Column: 9 }
+Function:        f
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            VectorizationNotBeneficial
+DebugLoc:        { File: 'k7.c', Line: 5, Column: 9 }
+Function:        f
+...

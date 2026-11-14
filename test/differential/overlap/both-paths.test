@@ -1,0 +1,21 @@
+# The repaired IR of the overlap driver really contains both copies of every kernel
+# loop: a runtime check, the original loop (.lr.orig) and the promoted loop.
+# (-fno-discard-value-names keeps the IR names the repair gives its values.)
+# RUN: %looplens_clang -O3 -ffp-contract=off -fno-discard-value-names -mllvm -looplens-repair -S -emit-llvm \
+# RUN:   %S/overlap.c -o - | FileCheck %s
+# CHECK-LABEL: define {{.*}}@k_dot(
+# CHECK: %lr.conflict =
+# CHECK: br i1 %lr.conflict, label %for.body.lr.orig.preheader, label %for.body.preheader
+# CHECK: for.body.lr.orig:
+# CHECK-LABEL: define {{.*}}@k_sum(
+# CHECK: %lr.conflict =
+# CHECK: br i1 %lr.conflict, label %for.body.lr.orig.preheader, label %for.body.preheader
+# CHECK: for.body.lr.orig:
+# CHECK-LABEL: define {{.*}}@k_col(
+# CHECK: %lr.conflict =
+# CHECK: br i1 %lr.conflict, label %for.body.lr.orig.preheader, label %for.body.preheader
+# CHECK: for.body.lr.orig:
+# CHECK-LABEL: define {{.*}}@k_max(
+# CHECK: %lr.conflict =
+# CHECK: br i1 %lr.conflict, label %for.body.lr.orig.preheader, label %for.body.preheader
+# CHECK: for.body.lr.orig:

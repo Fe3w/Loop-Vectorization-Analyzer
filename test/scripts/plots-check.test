@@ -1,0 +1,9 @@
+# plots.py --check: the plots in --out must be exactly what the CSVs produce.
+# RUN: rm -rf %t && mkdir -p %t/res %t/plots
+# RUN: cp %S/Inputs/plots/*.csv %t/res/
+# RUN: %python %S/../../scripts/plots.py %t/res --out %t/plots
+# RUN: %python %S/../../scripts/plots.py %t/res --out %t/plots --check
+# RUN: sed -i 's/^10,9,90.0/10,7,70.0/' %t/res/agreement_summary.csv
+# RUN: not %python %S/../../scripts/plots.py %t/res --out %t/plots --check > %t/log 2>&1
+# RUN: FileCheck %s < %t/log
+# CHECK: out of date: agreement.svg

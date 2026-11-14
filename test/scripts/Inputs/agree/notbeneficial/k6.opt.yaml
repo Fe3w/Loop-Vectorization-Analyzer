@@ -1,0 +1,42 @@
+--- !Missed
+Pass:            loop-vectorize
+Name:            VectorizationNotBeneficial
+DebugLoc:        { File: 'k6.c', Line: 3, Column: 9 }
+Function:        f
+...
+--- !Analysis
+Pass:            loop-vectorize
+Name:            UnsafeDep
+DebugLoc:        { File: 'k6.c', Line: 8, Column: 20 }
+Function:        f
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+DebugLoc:        { File: 'k6.c', Line: 7, Column: 9 }
+Function:        f
+...
+--- !Analysis
+Pass:            loop-vectorize
+Name:            UncountableEarlyExitLoopsDisabled
+DebugLoc:        { File: 'k6.c', Line: 12, Column: 9 }
+Function:        f
+...
+--- !Analysis
+Pass:            loop-vectorize
+Name:            NonReductionValueUsedOutsideLoop
+DebugLoc:        { File: 'k6.c', Line: 20, Column: 9 }
+Function:        f
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+DebugLoc:        { File: 'k6.c', Line: 20, Column: 9 }
+Function:        f
+...
+--- !Passed
+Pass:            loop-vectorize
+Name:            Interleaved
+DebugLoc:        { File: 'k6.c', Line: 30, Column: 9 }
+Function:        f
+...

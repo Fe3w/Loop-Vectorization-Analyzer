@@ -9,6 +9,10 @@
 ; CHECK-LABEL: looplens: function 'nopre_same'
 ; CHECK-NEXT:  loop header=%loop depth=1 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + (1 smax %n))<nsw>] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + (1 smax %n))<nsw>]{{$}}
+; The header phi IS an add-recurrence here; asking InductionDescriptor without a
+; preheader crashes LLVM 20, so LoopLens does not ask (regression guard, S04).
+; CHECK-NEXT:  iv <no-preheader>{{$}}
+; CHECK-NEXT:  form simplify=no rotated=yes lcssa=yes exiting=single innermost=yes guarded=no{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @nopre_same(ptr %a, i64 %n, i1 %b) {

@@ -1,0 +1,12 @@
+--- !Analysis
+Pass:            loop-vectorize
+Name:            SomethingNew
+DebugLoc:        { File: 'k3.c', Line: 2, Column: 5 }
+Function:        f
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+DebugLoc:        { File: 'k3.c', Line: 2, Column: 3 }
+Function:        f
+...

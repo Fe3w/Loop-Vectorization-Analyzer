@@ -1,0 +1,19 @@
+# The loop-body extractor of scripts/fix_mca.py on clang's assembly with two
+# inner loops: the vector body (.LBB0_4, packed addps) and the scalar
+# remainder (.LBB0_7, addss). --vectorized picks the packed body; without it
+# the first inner loop is taken. The body runs from the header label to the
+# backward branch to it, labels and directives dropped.
+# RUN: %python %S/../../scripts/fix_mca.py --extract %S/Inputs/mca/two-loops.s --vectorized \
+# RUN:   | FileCheck --check-prefix=VEC %s
+# RUN: %python %S/../../scripts/fix_mca.py --extract %S/Inputs/mca/two-loops.s \
+# RUN:   | FileCheck --check-prefix=VEC %s
+# RUN: %python %S/../../scripts/fix_mca.py --extract %S/Inputs/mca/two-loops.s --last \
+# RUN:   | FileCheck --check-prefix=SCALAR %s
+# VEC:      # loop .LBB0_4 packed=yes instructions=6
+# VEC-NEXT: movups (%rsi,%r8), %xmm1
+# VEC-NEXT: addps %xmm0, %xmm1
+# VEC:      jne .LBB0_4
+# VEC-NOT:  addss
+# SCALAR:      # loop .LBB0_7 packed=no instructions=6
+# SCALAR-NEXT: movss (%rsi,%rcx,4), %xmm1
+# SCALAR:      jne .LBB0_7

@@ -1,0 +1,7 @@
+suite,group,loops,gcc_vectorized,gcc_missed_same_category,gcc_missed_other_category,gcc_no_verdict
+polybench,all,163,89,39,35,0
+polybench,llvm-vectorized,85,82,0,3,0
+polybench,llvm-missed,78,7,39,32,0
+polybench,looplens:control-flow,35,0,35,0,0
+polybench,looplens:loop-carried-dependence,10,0,0,10,0
+polybench,looplens:reduction,33,7,4,22,0

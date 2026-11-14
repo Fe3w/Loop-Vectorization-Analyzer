@@ -1,0 +1,10 @@
+# verify_fixes.sh: for each example, the rule LoopLens reports on before.c and
+# whether LoopVectorize vectorizes after.c (the suggested fix applied). An example
+# without after.c records "no automatic fix".
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: bash %S/../../scripts/verify_fixes.sh --examples %S/Inputs/fixes \
+# RUN:   --plugin %shlibdir/LoopLens%shlibext --out %t/fixes.csv
+# RUN: FileCheck %s < %t/fixes.csv
+# CHECK:      example,looplens_rule_before,lv_vectorized_before,fix_flags,lv_vectorized_after,fix_verified
+# CHECK-NEXT: hint-vectorize-disabled,hint-vectorize-disabled,no,,yes,yes
+# CHECK-NEXT: recur-unsupported,recur-unsupported,no,,n/a,no automatic fix

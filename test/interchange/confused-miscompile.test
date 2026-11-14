@@ -1,0 +1,19 @@
+# LLVM 20.1.2's loop-interchange changes the result of a program whose two
+# arrays overlap (B[i][j] is A[i+1][j-1]): the dependence it would have to
+# respect is "confused" in DependenceAnalysis, and LoopInterchange drops
+# confused dependences. Reference value: the same C (Inputs/overlap-colsum.c)
+# built with clang -O0. LoopLens reports legal=unknown why=confused for this
+# loop instead of "legal". Observed in LLVM 20.1.2; newer LLVM not checked.
+# Fixture: scripts/make_fixture.sh --o3 Inputs/overlap-colsum.c.
+#
+# RUN: lli %S/Inputs/overlap-colsum.ll | FileCheck --check-prefix=REF %s
+# RUN: opt -passes='loop(loop-interchange),verify' -pass-remarks=loop-interchange \
+# RUN:   %S/Inputs/overlap-colsum.ll -S -o %t.ll 2>&1 | FileCheck --check-prefix=XCHG %s
+# RUN: lli %t.ll | FileCheck --check-prefix=WRONG %s
+# RUN: opt -load-pass-plugin=%shlibdir/LoopLens%shlibext -passes=looplens-analyze \
+# RUN:   -disable-output %S/Inputs/overlap-colsum.ll 2>&1 | FileCheck --check-prefix=LENS %s
+#
+# REF: checksum=1961666.0
+# XCHG: Loop interchanged with enclosing loop.
+# WRONG: checksum=171990.0
+# LENS: interchange legal=unknown {{.*}}why=confused

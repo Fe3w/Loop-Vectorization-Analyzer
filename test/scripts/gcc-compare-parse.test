@@ -1,0 +1,37 @@
+# scripts/gcc_compare.py's parser and join on canned GCC 13 output
+# (Inputs/gcc/remarks.txt) and a canned agreement CSV. Cases: a loop GCC
+# vectorizes (line 11); a missed loop whose reason is at a statement line
+# (20 -> 21:9); a reason mapped to reduction (30); a reason not in the table
+# (40: category "other", text kept); a loop seen both missed and vectorized
+# (60: vectorized wins, as GCC re-analyses after versioning); a loop GCC
+# never mentions (80: none); an LLVM-only row (90: dropped, not matched by
+# LoopLens); two loops on one line, different columns (95: ambiguous); one
+# loop inlined into a second function (100: same line and column, both rows
+# get GCC's verdict; the statement text after the reason is dropped).
+# Outer-loop and basic-block lines are ignored.
+# RUN: %python %S/../../scripts/gcc_compare.py --agreement %S/Inputs/gcc/agreement.csv \
+# RUN:   --gcc-output %S/Inputs/gcc/remarks.txt --suite t --out %t.csv --summary %t.sum.csv \
+# RUN:   | FileCheck --check-prefix=STDOUT %s
+# RUN: FileCheck %s < %t.csv
+# RUN: FileCheck --check-prefix=SUM %s < %t.sum.csv
+# CHECK:      suite,file,line,function,looplens_primary,looplens_rule,llvm,gcc,gcc_reason,gcc_category,same_category
+# CHECK-NEXT: t,k/a.c,11,main,none,none,vectorized,vectorized,,none,yes
+# CHECK-NEXT: t,k/a.c,20,main,stride,cost-strided,missed,missed,complicated access pattern,stride,yes
+# CHECK-NEXT: t,k/a.c,30,main,reduction,red-exact-fp,missed,missed,unsupported use in stmt,reduction,yes
+# CHECK-NEXT: t,k/a.c,40,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,some reason GCC 14 might add,other,no
+# CHECK-NEXT: t,k/a.c,60,main,call-or-unsafe-memop,call-no-vector-form,missed,vectorized,,none,no
+# CHECK-NEXT: t,k/a.c,80,main,loop-carried-dependence,mem-unsafe-dep,missed,none,,,no
+# CHECK-NEXT: t,k/a.c,95,main,loop-carried-dependence,mem-unsafe-dep,missed,ambiguous,,,no
+# CHECK-NEXT: t,k/a.c,95,main,none,none,vectorized,ambiguous,,,no
+# CHECK-NEXT: t,k/a.c,100,kern,reduction,red-exact-fp,missed,missed,no vectype for stmt,other,no
+# CHECK-NEXT: t,k/a.c,100,main,reduction,red-exact-fp,missed,missed,no vectype for stmt,other,no
+# CHECK-NOT:  ,90,
+# SUM:      suite,group,loops,gcc_vectorized,gcc_missed_same_category,gcc_missed_other_category,gcc_no_verdict
+# SUM-NEXT: t,all,10,2,2,3,3
+# SUM-NEXT: t,llvm-vectorized,2,1,0,0,1
+# SUM-NEXT: t,llvm-missed,8,1,2,3,2
+# SUM-NEXT: t,looplens:call-or-unsafe-memop,1,1,0,0,0
+# SUM-NEXT: t,looplens:loop-carried-dependence,3,0,0,1,2
+# SUM-NEXT: t,looplens:reduction,3,0,1,2,0
+# SUM-NEXT: t,looplens:stride,1,0,1,0,0
+# STDOUT: t: 10 loops; LLVM missed 8, of which GCC vectorizes 1; both missed with the same category: 2 of 5 with a GCC reason

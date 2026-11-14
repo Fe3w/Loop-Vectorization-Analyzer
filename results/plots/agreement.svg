@@ -1,0 +1,57 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 420' width='900' height='420'>
+<rect width='900' height='420' fill='#ffffff'/>
+<text x='60.0' y='26.0' font-size='16' text-anchor='start' font-weight='bold' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>Agreement with LoopVectorize</text>
+<text x='60.0' y='46.0' font-size='12' text-anchor='start' font-weight='normal' fill='#5b6862' font-family='Helvetica, Arial, sans-serif'>loops where LoopLens matches LoopVectorize / loops matched (clang-20 -O3 -g); source: results/*agreement_summary.csv</text>
+<line x1='60' y1='350.0' x2='880' y2='350.0' stroke='#d8ded9' stroke-width='1'/>
+<text x='52.0' y='354.0' font-size='11' text-anchor='end' font-weight='normal' fill='#5b6862' font-family='Helvetica, Arial, sans-serif'>0%</text>
+<line x1='60' y1='294.0' x2='880' y2='294.0' stroke='#d8ded9' stroke-width='1'/>
+<text x='52.0' y='298.0' font-size='11' text-anchor='end' font-weight='normal' fill='#5b6862' font-family='Helvetica, Arial, sans-serif'>20%</text>
+<line x1='60' y1='238.0' x2='880' y2='238.0' stroke='#d8ded9' stroke-width='1'/>
+<text x='52.0' y='242.0' font-size='11' text-anchor='end' font-weight='normal' fill='#5b6862' font-family='Helvetica, Arial, sans-serif'>40%</text>
+<line x1='60' y1='182.0' x2='880' y2='182.0' stroke='#d8ded9' stroke-width='1'/>
+<text x='52.0' y='186.0' font-size='11' text-anchor='end' font-weight='normal' fill='#5b6862' font-family='Helvetica, Arial, sans-serif'>60%</text>
+<line x1='60' y1='126.0' x2='880' y2='126.0' stroke='#d8ded9' stroke-width='1'/>
+<text x='52.0' y='130.0' font-size='11' text-anchor='end' font-weight='normal' fill='#5b6862' font-family='Helvetica, Arial, sans-serif'>80%</text>
+<line x1='60' y1='70.0' x2='880' y2='70.0' stroke='#d8ded9' stroke-width='1'/>
+<text x='52.0' y='74.0' font-size='11' text-anchor='end' font-weight='normal' fill='#5b6862' font-family='Helvetica, Arial, sans-serif'>100%</text>
+<text x='128.3' y='368.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>x86-64 (generic)</text>
+<text x='128.3' y='382.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>PolyBench</text>
+<rect x='82.3' y='70.0' width='44.0' height='280.0' fill='#1f6f5c'/>
+<text x='104.3' y='65.0' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>163 / 163</text>
+<rect x='130.3' y='70.0' width='44.0' height='280.0' fill='#8fbfb0'/>
+<text x='152.3' y='65.0' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>163 / 163</text>
+<text x='265.0' y='368.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>x86-64 (generic)</text>
+<text x='265.0' y='382.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>TSVC</text>
+<rect x='219.0' y='88.7' width='44.0' height='261.3' fill='#1f6f5c'/>
+<text x='241.0' y='83.7' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>168 / 180</text>
+<rect x='267.0' y='88.7' width='44.0' height='261.3' fill='#8fbfb0'/>
+<text x='289.0' y='83.7' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>168 / 180</text>
+<text x='401.7' y='368.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>x86-64-v4 (AVX-512)</text>
+<text x='401.7' y='382.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>PolyBench</text>
+<rect x='355.7' y='70.0' width='44.0' height='280.0' fill='#1f6f5c'/>
+<text x='377.7' y='65.0' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>163 / 163</text>
+<rect x='403.7' y='70.0' width='44.0' height='280.0' fill='#8fbfb0'/>
+<text x='425.7' y='65.0' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>163 / 163</text>
+<text x='538.3' y='368.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>x86-64-v4 (AVX-512)</text>
+<text x='538.3' y='382.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>TSVC</text>
+<rect x='492.3' y='70.0' width='44.0' height='280.0' fill='#1f6f5c'/>
+<text x='514.3' y='65.0' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>180 / 180</text>
+<rect x='540.3' y='70.0' width='44.0' height='280.0' fill='#8fbfb0'/>
+<text x='562.3' y='65.0' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>180 / 180</text>
+<text x='675.0' y='368.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>AArch64</text>
+<text x='675.0' y='382.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>PolyBench</text>
+<rect x='629.0' y='157.6' width='44.0' height='192.4' fill='#1f6f5c'/>
+<text x='651.0' y='152.6' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>112 / 163</text>
+<rect x='677.0' y='157.6' width='44.0' height='192.4' fill='#8fbfb0'/>
+<text x='699.0' y='152.6' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>112 / 163</text>
+<text x='811.7' y='368.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>AArch64</text>
+<text x='811.7' y='382.0' font-size='11' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>TSVC</text>
+<rect x='765.7' y='93.3' width='44.0' height='256.7' fill='#1f6f5c'/>
+<text x='787.7' y='88.3' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>165 / 180</text>
+<rect x='813.7' y='93.3' width='44.0' height='256.7' fill='#8fbfb0'/>
+<text x='835.7' y='88.3' font-size='10' text-anchor='middle' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>165 / 180</text>
+<rect x='60' y='400' width='12' height='12' fill='#1f6f5c'/>
+<text x='78.0' y='410.0' font-size='11' text-anchor='start' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>primary reason</text>
+<rect x='188' y='400' width='12' height='12' fill='#8fbfb0'/>
+<text x='206.0' y='410.0' font-size='11' text-anchor='start' font-weight='normal' fill='#1b2420' font-family='Helvetica, Arial, sans-serif'>all reasons covered</text>
+</svg>

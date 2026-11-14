@@ -1,0 +1,9 @@
+# An unknown LLVM remark name is never dropped: unmapped:<Name>, counted as disagreement.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/unmapped --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+# RUN: FileCheck --check-prefix=SUM %s < %t/agreement_summary.csv
+
+# CSV: k3,k3.c,2,3,f,Missed,SomethingNew,unmapped:SomethingNew,none,none,,both,no,no
+# SUM: loops_both
+# SUM-NEXT: 1,0,0.0,0,0.0,0,0,0,SomethingNew

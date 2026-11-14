@@ -1,0 +1,12 @@
+kernel,file,line,col,function,lv_verdict,lv_reasons,lv_category,looplens_primary,looplens_rule,looplens_secondary,match,agree,agree_incl_secondary,lv_categories,all_reasons_covered
+a,k/a.c,11,7,main,Vectorized,,none,none,none,,both,yes,yes,none,yes
+a,k/a.c,20,7,main,Missed,VectorizationNotBeneficial,cost,stride,cost-strided,,both,yes,yes,cost,yes
+a,k/a.c,30,7,main,Missed,CantReorderFPOps,reduction,reduction,red-exact-fp,,both,yes,yes,reduction,yes
+a,k/a.c,40,7,main,Missed,UnsafeDep,loop-carried-dependence,loop-carried-dependence,mem-unsafe-dep,,both,yes,yes,loop-carried-dependence,yes
+a,k/a.c,60,7,main,Missed,CantVectorizeLibcall,call-or-unsafe-memop,call-or-unsafe-memop,call-no-vector-form,,both,yes,yes,call-or-unsafe-memop,yes
+a,k/a.c,80,7,main,Missed,UnsafeDep,loop-carried-dependence,loop-carried-dependence,mem-unsafe-dep,,both,yes,yes,loop-carried-dependence,yes
+a,k/a.c,90,7,main,Vectorized,,none,none,none,,lv-only,no,no,none,no
+a,k/a.c,95,7,main,Missed,UnsafeDep,loop-carried-dependence,loop-carried-dependence,mem-unsafe-dep,,both,yes,yes,loop-carried-dependence,yes
+a,k/a.c,95,20,main,Vectorized,,none,none,none,,both,yes,yes,none,yes
+a,k/a.c,100,7,kern,Missed,CantReorderFPOps,reduction,reduction,red-exact-fp,,both,yes,yes,reduction,yes
+a,k/a.c,100,7,main,Missed,CantReorderFPOps,reduction,reduction,red-exact-fp,,both,yes,yes,reduction,yes

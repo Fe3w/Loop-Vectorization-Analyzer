@@ -1,0 +1,9 @@
+# Two loops with one source location in one function (TSVC s2710): LoopVectorize
+# visits innermost loops in program order (LoopVectorizePass::runImpl collects
+# them over LoopInfo's reversed top-level list and pops from the back), the same
+# order LoopLens reports them, so equal counts are paired in order.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/sameloc --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+# CSV: k7,k7.c,5,9,f,Vectorized,,none,none,none,,both-by-order,yes,yes
+# CSV-NEXT: k7,k7.c,5,9,f,Missed,VectorizationNotBeneficial,cost,stride,cost-strided,,both-by-order,yes,yes

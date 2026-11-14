@@ -1,0 +1,164 @@
+suite,file,line,function,looplens_primary,looplens_rule,llvm,gcc,gcc_reason,gcc_category,same_category
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/correlation/correlation.c,36,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/correlation/correlation.c,54,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/correlation/correlation.c,82,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/correlation/correlation.c,91,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/correlation/correlation.c,103,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/correlation/correlation.c,116,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/covariance/covariance.c,35,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/covariance/covariance.c,52,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/covariance/covariance.c,76,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/covariance/covariance.c,82,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/datamining/covariance/covariance.c,89,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemm/gemm.c,38,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemm/gemm.c,41,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemm/gemm.c,44,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemm/gemm.c,60,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemm/gemm.c,90,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemm/gemm.c,93,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemver/gemver.c,56,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemver/gemver.c,72,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemver/gemver.c,102,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemver/gemver.c,106,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemver/gemver.c,109,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gemver/gemver.c,113,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gesummv/gesummv.c,40,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gesummv/gesummv.c,59,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/gesummv/gesummv.c,87,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/symm/symm.c,38,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/symm/symm.c,43,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/symm/symm.c,45,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/symm/symm.c,62,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/symm/symm.c,94,main,none,none,vectorized,missed,control flow in loop,control-flow,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/symm/symm.c,97,main,reduction,red-exact-fp,missed,vectorized,,none,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syr2k/syr2k.c,38,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syr2k/syr2k.c,43,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syr2k/syr2k.c,60,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syr2k/syr2k.c,89,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syr2k/syr2k.c,92,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syrk/syrk.c,37,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syrk/syrk.c,40,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syrk/syrk.c,56,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syrk/syrk.c,84,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/syrk/syrk.c,87,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/trmm/trmm.c,35,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/trmm/trmm.c,39,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/trmm/trmm.c,58,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/trmm/trmm.c,87,main,none,none,vectorized,missed,control flow in loop,control-flow,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/blas/trmm/trmm.c,88,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/2mm/2mm.c,39,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/2mm/2mm.c,42,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/2mm/2mm.c,45,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/2mm/2mm.c,48,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/2mm/2mm.c,64,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/2mm/2mm.c,93,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/2mm/2mm.c,100,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/3mm/3mm.c,35,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/3mm/3mm.c,38,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/3mm/3mm.c,41,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/3mm/3mm.c,44,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/3mm/3mm.c,60,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/3mm/3mm.c,89,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/3mm/3mm.c,97,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/3mm/3mm.c,105,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/atax/atax.c,34,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/atax/atax.c,37,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/atax/atax.c,53,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/atax/atax.c,79,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/atax/atax.c,81,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/bicg/bicg.c,33,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/bicg/bicg.c,37,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/bicg/bicg.c,55,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/bicg/bicg.c,61,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/bicg/bicg.c,88,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/doitgen/doitgen.c,34,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/doitgen/doitgen.c,37,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/doitgen/doitgen.c,54,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/doitgen/doitgen.c,77,kernel_doitgen,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/doitgen/doitgen.c,77,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/doitgen/doitgen.c,80,kernel_doitgen,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/doitgen/doitgen.c,80,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/mvt/mvt.c,41,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/mvt/mvt.c,59,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/mvt/mvt.c,66,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/mvt/mvt.c,89,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/kernels/mvt/mvt.c,92,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/cholesky/cholesky.c,33,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/cholesky/cholesky.c,49,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/cholesky/cholesky.c,52,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/cholesky/cholesky.c,71,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/cholesky/cholesky.c,93,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/cholesky/cholesky.c,99,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/durbin/durbin.c,31,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/durbin/durbin.c,49,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/durbin/durbin.c,80,main,reduction,red-exact-fp,missed,vectorized,,none,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/durbin/durbin.c,85,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/gramschmidt/gramschmidt.c,34,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/gramschmidt/gramschmidt.c,57,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/gramschmidt/gramschmidt.c,65,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/gramschmidt/gramschmidt.c,92,main,reduction,red-exact-fp,missed,vectorized,,none,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/gramschmidt/gramschmidt.c,95,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/gramschmidt/gramschmidt.c,100,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/gramschmidt/gramschmidt.c,102,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/lu/lu.c,33,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/lu/lu.c,50,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/lu/lu.c,53,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/lu/lu.c,72,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/lu/lu.c,92,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/lu/lu.c,98,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,35,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,44,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,61,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,64,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,82,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,108,main,reduction,red-exact-fp,missed,vectorized,,none,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,115,main,reduction,red-exact-fp,missed,vectorized,,none,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,124,main,reduction,red-exact-fp,missed,vectorized,,none,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/ludcmp/ludcmp.c,131,main,reduction,red-exact-fp,missed,vectorized,,none,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/trisolv/trisolv.c,37,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/trisolv/trisolv.c,54,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/linear-algebra/solvers/trisolv/trisolv.c,77,main,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/deriche/deriche.c,36,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/deriche/deriche.c,53,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/deriche/deriche.c,96,main,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/deriche/deriche.c,109,main,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/deriche/deriche.c,119,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/deriche/deriche.c,127,main,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/deriche/deriche.c,141,main,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/deriche/deriche.c,151,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/floyd-warshall/floyd-warshall.c,32,main,none,none,vectorized,missed,control flow in loop,control-flow,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/floyd-warshall/floyd-warshall.c,52,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/floyd-warshall/floyd-warshall.c,73,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/nussinov/nussinov.c,38,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/nussinov/nussinov.c,61,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/medley/nussinov/nussinov.c,102,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,complicated access pattern,stride,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/adi/adi.c,32,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/adi/adi.c,51,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/adi/adi.c,102,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/adi/adi.c,108,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/adi/adi.c,117,main,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/adi/adi.c,122,main,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,36,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,39,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,62,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,71,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,79,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,104,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,107,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,110,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/fdtd-2d/fdtd-2d.c,113,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/heat-3d/heat-3d.c,34,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/heat-3d/heat-3d.c,52,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/heat-3d/heat-3d.c,75,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/heat-3d/heat-3d.c,85,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/jacobi-1d/jacobi-1d.c,32,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/jacobi-1d/jacobi-1d.c,51,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/jacobi-1d/jacobi-1d.c,74,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/jacobi-1d/jacobi-1d.c,76,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/jacobi-2d/jacobi-2d.c,33,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/jacobi-2d/jacobi-2d.c,53,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/jacobi-2d/jacobi-2d.c,76,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/jacobi-2d/jacobi-2d.c,79,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/seidel-2d/seidel-2d.c,32,main,none,none,vectorized,vectorized,,none,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/seidel-2d/seidel-2d.c,49,print_array,control-flow,cfg-unpredicable,missed,missed,control flow in loop,control-flow,yes
+polybench,bench/polybench/polybench-c-4.2.1-beta/stencils/seidel-2d/seidel-2d.c,70,main,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no

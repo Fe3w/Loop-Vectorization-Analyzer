@@ -1,0 +1,18 @@
+--- !Missed
+Pass:            loop-vectorize
+Name:            VectorizationNotBeneficial
+DebugLoc:        { File: 'k8.c', Line: 4, Column: 3 }
+Function:        f
+...
+--- !Passed
+Pass:            loop-vectorize
+Name:            Interleaved
+DebugLoc:        { File: 'k8.c', Line: 4, Column: 3 }
+Function:        f
+...
+--- !Passed
+Pass:            loop-vectorize
+Name:            Vectorized
+DebugLoc:        { File: 'k8.c', Line: 9, Column: 3 }
+Function:        f
+...

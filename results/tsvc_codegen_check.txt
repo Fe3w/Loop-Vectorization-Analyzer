@@ -1,0 +1,4 @@
+codegen check: clang -O3 -g0 -S, with vs without the LoopLens plugin
+Ubuntu clang version 20.1.2 (0ubuntu1~24.04.3)
+kernels identical: 1
+kernels different: 0

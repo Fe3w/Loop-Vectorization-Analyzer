@@ -1,0 +1,16 @@
+# Second metric: does LoopLens's primary+secondary set cover *every* category
+# among LoopVectorize's reasons (not just its first)? Columns lv_categories and
+# all_reasons_covered; summary all_reasons_covered(_pct).
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/attr --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+# RUN: FileCheck --check-prefix=SUM %s < %t/agreement_summary.csv
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/basic --out %t/b
+# RUN: FileCheck --check-prefix=BASIC %s < %t/b/agreement.csv
+# CSV: ,agree_incl_secondary,lv_categories,all_reasons_covered
+# CSV: k2,k2.c,4,3,f,Missed,NoCFGForSelect;CantVectorizeLibcall,control-flow,control-flow,cfg-unpredicable,call-or-unsafe-memop,both,yes,yes,control-flow;call-or-unsafe-memop,yes
+# CSV: k2,k2.c,9,3,f,Vectorized,,none,none,none,,both,yes,yes,none,yes
+# SUM: ,all_reasons_covered,all_reasons_covered_pct
+# SUM-NEXT: 2,2,100.0,{{.*}},2,100.0
+# The CantReorderFPOps loop where LoopLens has reduction only as a secondary:
+# BASIC: k1,k1.c,11,3,h,Missed,CantReorderFPOps,reduction,none,none,reduction,both,no,yes,reduction,yes

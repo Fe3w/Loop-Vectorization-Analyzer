@@ -1,0 +1,8 @@
+# Every LLVM remark tag used by loop-vectorize parses (!Passed, !Missed, !Analysis,
+# !AnalysisFPCommute); multi-line DebugLoc flow maps are handled (basic/k1.opt.yaml has one).
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/basic --dump-remarks | FileCheck %s
+
+# CHECK: Analysis loop-vectorize InterleavingNotBeneficial k1.c:3:3
+# CHECK: Passed loop-vectorize Vectorized k1.c:3:3
+# CHECK: Analysis looplens mem-unsafe-dep k1.c:7:3
+# CHECK: AnalysisFPCommute loop-vectorize CantReorderFPOps k1.c:12:7

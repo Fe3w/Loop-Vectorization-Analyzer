@@ -1,0 +1,24 @@
+--- !Analysis
+Pass:            loop-vectorize
+Name:            NoCFGForSelect
+DebugLoc:        { File: 'k2.c', Line: 5, Column: 9 }
+Function:        f
+...
+--- !Analysis
+Pass:            loop-vectorize
+Name:            CantVectorizeLibcall
+DebugLoc:        { File: 'k2.c', Line: 5, Column: 9 }
+Function:        f
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+DebugLoc:        { File: 'k2.c', Line: 4, Column: 3 }
+Function:        f
+...
+--- !Passed
+Pass:            loop-vectorize
+Name:            Vectorized
+DebugLoc:        { File: 'k2.c', Line: 9, Column: 3 }
+Function:        f
+...

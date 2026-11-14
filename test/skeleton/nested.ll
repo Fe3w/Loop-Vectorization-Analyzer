@@ -5,8 +5,18 @@
 ; CHECK-LABEL: looplens: function 'nested'
 ; CHECK-NEXT:  loop header=%outer depth=1 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + (1 smax %n))<nsw>] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + (1 smax %n))<nsw>]{{$}}
+; CHECK-NEXT:  iv phi=%i kind=int start=0 step=1 scev=[{0,+,1}<nuw><nsw><%outer>] controls-exit=yes{{$}}
+; CHECK-NEXT:  form simplify=yes rotated=yes lcssa=yes exiting=single innermost=no guarded=no{{$}}
+; CHECK-NEXT:  mem <not-innermost>{{$}}
+; CHECK-NEXT:  blocker <not-innermost>{{$}}
 ; CHECK-NEXT:  loop header=%inner depth=2 loc=<none>{{$}}
 ; CHECK-NEXT:  trip kind=symbolic count=none btc=[(-1 + (1 smax %n))<nsw>] max-btc=[9223372036854775806] symbolic-max-btc=[(-1 + (1 smax %n))<nsw>]{{$}}
+; CHECK-NEXT:  iv phi=%j kind=int start=0 step=1 scev=[{0,+,1}<nuw><nsw><%inner>] controls-exit=yes{{$}}
+; CHECK-NEXT:  form simplify=yes rotated=yes lcssa=yes exiting=single innermost=yes guarded=no{{$}}
+; CHECK-NEXT:  cfg blocks=1 predicated=0 switches=0 exits=1 early-exit=none{{$}}
+; CHECK-NEXT:  mem status=safe checks=0 max-safe-width=any report=none{{$}}
+; CHECK-NEXT:  dep <none>{{$}}
+; CHECK-NEXT:  blocker primary=none rule=none secondary=none{{$}}
 ; CHECK-NOT:   loop header=
 
 define void @nested(ptr %a, i64 %n) {

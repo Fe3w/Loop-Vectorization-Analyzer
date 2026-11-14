@@ -1,0 +1,58 @@
+--- !Analysis
+Pass:            loop-vectorize
+Name:            InterleavingNotBeneficial
+DebugLoc:        { File: 'k1.c', Line: 3, Column: 3 }
+Function:        f
+Args:
+  - String:          the cost-model indicates that interleaving is not beneficial
+...
+--- !Passed
+Pass:            loop-vectorize
+Name:            Vectorized
+DebugLoc:        { File: 'k1.c', 
+                   Line: 3, Column: 3 }
+Function:        f
+Args:
+  - String:          'vectorized '
+...
+--- !Analysis
+Pass:            looplens
+Name:            mem-unsafe-dep
+DebugLoc:        { File: 'k1.c', Line: 7, Column: 3 }
+Function:        g
+Args:
+  - String:          'Category: '
+  - Category:        loop-carried-dependence
+...
+--- !Analysis
+Pass:            loop-vectorize
+Name:            UnsafeDep
+DebugLoc:        { File: 'k1.c', Line: 8, Column: 12 }
+Function:        g
+Args:
+  - String:          'loop not vectorized: unsafe dependent memory operations in loop'
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+DebugLoc:        { File: 'k1.c', Line: 7, Column: 3 }
+Function:        g
+Args:
+  - String:          loop not vectorized
+...
+--- !AnalysisFPCommute
+Pass:            loop-vectorize
+Name:            CantReorderFPOps
+DebugLoc:        { File: 'k1.c', Line: 12, Column: 7 }
+Function:        h
+Args:
+  - String:          'loop not vectorized: cannot prove it is safe to reorder floating-point operations'
+...
+--- !Missed
+Pass:            loop-vectorize
+Name:            MissedDetails
+DebugLoc:        { File: 'k1.c', Line: 11, Column: 3 }
+Function:        h
+Args:
+  - String:          loop not vectorized
+...

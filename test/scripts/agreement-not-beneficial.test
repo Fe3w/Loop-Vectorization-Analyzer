@@ -1,0 +1,18 @@
+# VectorizationNotBeneficial is itself LoopVectorize's per-loop verdict for a loop
+# the cost model rejects (a !Missed remark at the loop start, no MissedDetails
+# follows). It must close that loop, not leak into the next loop's reasons.
+# Found on TSVC in S19 (PolyBench has no such remark).
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/notbeneficial --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+
+# CSV: k6,k6.c,3,9,f,Missed,VectorizationNotBeneficial,cost,stride,stride-gather,,both,yes,yes
+# CSV-NEXT: k6,k6.c,7,9,f,Missed,UnsafeDep,loop-carried-dependence,loop-carried-dependence,mem-unsafe-dep,,both,yes,yes
+# Same for the other verdicts LoopVectorizePass::processLoop reports after
+# legality and returns without MissedDetails (LoopVectorize.cpp:10366-10410):
+# UncountableEarlyExitLoopsDisabled closes its loop (TSVC s332).
+# CSV-NEXT: k6,k6.c,12,9,f,Missed,UncountableEarlyExitLoopsDisabled,control-flow,control-flow,cfg-uncountable-early-exit,,both,yes,yes
+# CSV-NEXT: k6,k6.c,20,9,f,Missed,NonReductionValueUsedOutsideLoop,reduction,reduction,recur-unsupported,,both,yes,yes
+# Interleaved (a !Passed remark: VF=1 chosen, only interleaved -- found on AArch64)
+# is LoopVectorize's verdict "not vectorized, not profitable": category cost.
+# CSV-NEXT: k6,k6.c,30,9,f,Missed,Interleaved,cost,none,none,,both,no,no

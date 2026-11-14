@@ -1,0 +1,5 @@
+# The checksum guard of fetch_tsvc.sh (no network: only --verify-only).
+# RUN: not bash %S/../../scripts/fetch_tsvc.sh --verify-only tsvc.c \
+# RUN:   %S/Inputs/not-polybench.tar.gz 2>&1 | FileCheck %s
+# CHECK: checksum mismatch
+# CHECK-SAME: expected d87fdcf902720c09f1191fd310f5b80e1c95a1fd48394d6cced7cd78ad01a8af

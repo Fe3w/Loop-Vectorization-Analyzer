@@ -1,0 +1,179 @@
+suite,file,line,function,looplens_primary,looplens_rule,llvm,gcc,gcc_reason,gcc_category,same_category
+tsvc,bench/tsvc/tsvc.c,57,s000,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,57,main,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,78,s111,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,98,s1111,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,120,s112,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,140,s1112,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,140,main,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,162,s113,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,182,s1113,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,206,s114,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,230,s115,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,252,s1115,none,none,vectorized,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,274,s116,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,301,s118,reduction,red-exact-fp,missed,missed,complicated access pattern,stride,no
+tsvc,bench/tsvc/tsvc.c,325,s119,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,347,s1119,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,371,s121,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,399,s122,call-or-unsafe-memop,call-no-vector-form,missed,missed,loop nest containing two or more consecutive inner loops cannot be vectorized,outer-loop,no
+tsvc,bench/tsvc/tsvc.c,402,s122,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,428,s123,reduction,recur-unsupported,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,457,s124,none,none,vectorized,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,487,s125,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,513,s126,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,540,s127,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,568,s128,none,none,missed,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,593,s131,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,617,s132,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,643,s141,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,659,s151s,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,659,s151,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,699,s152,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,723,s161,loop-carried-dependence,mem-unsafe-dep,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,752,s1161,aliasing,mem-no-runtime-check,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,783,s162,call-or-unsafe-memop,call-no-vector-form,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,785,s162,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,811,s171,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,836,s172,call-or-unsafe-memop,call-no-vector-form,missed,missed,loop nest containing two or more consecutive inner loops cannot be vectorized,outer-loop,no
+tsvc,bench/tsvc/tsvc.c,837,s172,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,859,s173,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,883,s174,call-or-unsafe-memop,call-no-vector-form,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,884,s174,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,909,s175,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,933,s176,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,962,s211,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,985,s212,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1006,s1213,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1029,s221,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1049,s1221,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1071,s222,reduction,recur-unsupported,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,1095,s231,reduction,recur-unsupported,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,1119,s232,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1141,s1232,stride,cost-strided,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1165,s233,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1168,s233,stride,cost-strided,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1190,s2233,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1193,s2233,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1217,s235,reduction,recur-unsupported,missed,missed,statement clobbers memory,call-or-unsafe-memop,no
+tsvc,bench/tsvc/tsvc.c,1240,s241,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1267,s242,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1289,s243,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1313,s244,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1335,s1244,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1356,s2244,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1380,s251,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1402,s1251,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1425,s2251,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,1447,s3251,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1473,s252,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1498,s253,none,none,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1526,s254,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,1552,s255,none,none,vectorized,missed,unsupported use in stmt,reduction,no
+tsvc,bench/tsvc/tsvc.c,1577,s256,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1602,s257,stride,cost-strided,vectorized,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1626,s258,reduction,recur-unsupported,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1653,s261,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1676,s271,none,none,vectorized,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1703,s272,none,none,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1728,s273,none,none,vectorized,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1753,s274,none,none,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1782,s275,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,1804,s2275,stride,cost-strided,missed,missed,statement clobbers memory,call-or-unsafe-memop,no
+tsvc,bench/tsvc/tsvc.c,1829,s276,none,none,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1854,s277,loop-carried-dependence,mem-unsafe-dep,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1886,s278,none,none,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1916,s279,none,none,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,1948,s1279,none,none,vectorized,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,2013,s2711,none,none,vectorized,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,2037,s2712,none,none,vectorized,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,2063,s281,loop-carried-dependence,mem-unsafe-dep,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2087,s1281,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,2113,s291,reduction,recur-unsupported,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,2140,s292,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2164,s293,none,none,vectorized,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2164,main,none,none,vectorized,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2187,s2101,stride,cost-strided,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,2210,s2102,stride,cost-strided,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2234,s2111,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2265,s311,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,2265,main,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,2292,s31111,call-or-unsafe-memop,call-no-vector-form,missed,missed,statement clobbers memory,call-or-unsafe-memop,yes
+tsvc,bench/tsvc/tsvc.c,2323,s312,reduction,red-exact-fp,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2323,main,reduction,red-exact-fp,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2346,s313,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,2346,main,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,2370,s314,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2370,main,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2393,s315,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,2401,s315,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2429,s316,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2429,main,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2456,s317,reduction,red-exact-fp,missed,missed,unsupported data-type real_t,other,no
+tsvc,bench/tsvc/tsvc.c,2456,main,reduction,red-exact-fp,missed,missed,unsupported data-type real_t,other,no
+tsvc,bench/tsvc/tsvc.c,2487,s318,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2518,s319,reduction,red-exact-fp,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2550,s3110,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2582,s13110,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2612,s3111,reduction,recur-unsupported,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,2612,main,reduction,recur-unsupported,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,2638,s3112,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2638,main,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2663,s3113,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2663,main,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,2687,s321,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2709,s322,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2731,s323,reduction,recur-unsupported,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,2757,s331,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,2757,main,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,2789,s332,control-flow,cfg-uncountable-early-exit,missed,none,,,no
+tsvc,bench/tsvc/tsvc.c,2789,main,control-flow,cfg-uncountable-early-exit,missed,none,,,no
+tsvc,bench/tsvc/tsvc.c,2820,s341,reduction,recur-unsupported,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,2848,s342,reduction,recur-unsupported,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,2877,s343,reduction,recur-unsupported,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,2904,s351,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,2930,s1351,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,2930,main,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,2957,s352,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,2985,s353,stride,stride-gather,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,3021,s421,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3043,s1421,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3068,s422,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3094,s423,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3121,s424,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3147,s431,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3169,s441,none,none,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,3197,s442,none,none,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,3237,s443,none,none,vectorized,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,3270,s451,call-or-unsafe-memop,call-no-vector-form,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,3292,s452,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3316,s453,reduction,recur-unsupported,missed,missed,unsupported use in stmt,reduction,yes
+tsvc,bench/tsvc/tsvc.c,3345,s471,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3369,s481,control-flow,cfg-uncountable-early-exit,missed,missed,control flow in loop,control-flow,yes
+tsvc,bench/tsvc/tsvc.c,3395,s482,trip-count,trip-uncountable,missed,none,,,no
+tsvc,bench/tsvc/tsvc.c,3422,s491,stride,stride-gather,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,3450,s4112,stride,stride-gather,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3476,s4113,stride,stride-gather,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,3504,s4114,call-or-unsafe-memop,call-no-vector-form,missed,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,3505,s4114,stride,stride-gather,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3535,s4115,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3535,main,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3567,s4116,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3590,s4117,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3616,s4121,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3637,va,call-or-unsafe-memop,call-no-vector-form,missed,missed,more than one data ref in stmt,other,no
+tsvc,bench/tsvc/tsvc.c,3637,main,call-or-unsafe-memop,call-no-vector-form,missed,missed,more than one data ref in stmt,other,no
+tsvc,bench/tsvc/tsvc.c,3664,vag,stride,stride-gather,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3690,vas,stride,stride-gather,missed,missed,no vectype for stmt,other,no
+tsvc,bench/tsvc/tsvc.c,3712,vif,none,none,vectorized,missed,control flow in loop,control-flow,no
+tsvc,bench/tsvc/tsvc.c,3736,vpv,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3758,vtv,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3780,vpvtv,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3805,vpvts,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3827,vpvpv,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3849,vtvtv,none,none,vectorized,vectorized,,none,yes
+tsvc,bench/tsvc/tsvc.c,3873,vsumr,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3873,main,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3897,vdotr,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3897,main,reduction,red-exact-fp,missed,vectorized,,none,no
+tsvc,bench/tsvc/tsvc.c,3921,vbor,none,none,vectorized,vectorized,,none,yes

@@ -1,0 +1,11 @@
+# One loop, two verdicts (AArch64): "vectorization not beneficial" and then
+# "interleaved" at the same location belong to the same loop -- one row, not two.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/twoverdicts --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+# RUN: FileCheck --check-prefix=SUM %s < %t/agreement_summary.csv
+# CSV:      k8,k8.c,4,3,f,Missed,VectorizationNotBeneficial;Interleaved,cost,none,none,,both,no,no
+# CSV-NEXT: k8,k8.c,9,3,f,Vectorized,,none,none,none,,both,yes,yes
+# CSV-NOT:  k8
+# SUM: loops_both
+# SUM-NEXT: 2,1,

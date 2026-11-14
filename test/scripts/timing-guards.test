@@ -1,0 +1,12 @@
+# Guards that keep cloud and smoke timings out of results/:
+# a smoke run may not write under results/, and a real (non-smoke) run is refused
+# in a cloud session unless --allow-cloud is given.
+# RUN: not bash %S/../../bench/timing/time.sh --smoke --bench %S/Inputs/fakebench \
+# RUN:   --plugin %shlibdir/LoopLens%shlibext --kernels alpha --out %S/../../results/timing.csv > %t.a 2>&1
+# RUN: FileCheck --check-prefix=SMOKE %s < %t.a
+# RUN: not env CLAUDE_CODE_REMOTE=true bash %S/../../bench/timing/time.sh --bench %S/Inputs/fakebench \
+# RUN:   --plugin %shlibdir/LoopLens%shlibext --kernels alpha --out %t.csv > %t.b 2>&1
+# RUN: FileCheck --check-prefix=CLOUD %s < %t.b
+# RUN: not test -e %S/../../results/timing.csv
+# SMOKE: error: smoke timings must not be written under results/
+# CLOUD: error: refusing a real timing run in a cloud session

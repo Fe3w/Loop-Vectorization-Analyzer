@@ -1,0 +1,19 @@
+# bench/timing/time.sh --smoke on the fake bench: CSV format only (2 runs, no
+# warm-up). One base and one repair row per configuration and kernel, numeric
+# statistics with min <= median <= max. No timing value is checked.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: bash %S/../../bench/timing/time.sh --smoke --bench %S/Inputs/fakebench \
+# RUN:   --plugin %shlibdir/LoopLens%shlibext --kernels "alpha beta" --out %t/timing.csv > %t/log 2>&1
+# RUN: FileCheck %s < %t/timing.csv
+# RUN: %python -c "import csv,sys; r=list(csv.DictReader(open(sys.argv[1]))); assert len(r)==16, len(r); assert all(float(x['min_s'])<=float(x['median_s'])<=float(x['max_s']) for x in r); assert all(x['runs']=='2' and x['dataset']=='MINI' for x in r); print('rows ok')" %t/timing.csv | FileCheck --check-prefix=PY %s
+# CHECK:      kernel,dataset,config,variant,flags,runs,median_s,min_s,max_s,q1_s,q3_s,cpu_model,governor,pinned_cpu,clang,opt,date
+# CHECK-NEXT: alpha,MINI,O3,base,-O3,2,{{[0-9.]+}},{{[0-9.]+}},{{[0-9.]+}},{{[0-9.]+}},{{[0-9.]+}},
+# CHECK-NEXT: alpha,MINI,O3,repair,-O3,2,
+# CHECK-NEXT: alpha,MINI,O3-fast,base,-O3 -ffast-math,2,
+# CHECK-NEXT: alpha,MINI,O3-fast,repair,-O3 -ffast-math,2,
+# CHECK-NEXT: alpha,MINI,O3-native,base,-O3 -march=native,2,
+# CHECK-NEXT: alpha,MINI,O3-native,repair,-O3 -march=native,2,
+# CHECK-NEXT: alpha,MINI,O3-fast-native,base,-O3 -ffast-math -march=native,2,
+# CHECK-NEXT: alpha,MINI,O3-fast-native,repair,-O3 -ffast-math -march=native,2,
+# CHECK-NEXT: beta,MINI,O3,base,
+# PY: rows ok

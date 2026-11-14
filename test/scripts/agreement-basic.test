@@ -1,0 +1,16 @@
+# Three loops: vectorized/none (agree), UnsafeDep/loop-carried-dependence (agree),
+# CantReorderFPOps vs LoopLens none with reduction secondary (disagree on primary,
+# agree incl. secondary). Interleaving* remarks and other passes' remarks are ignored;
+# outer loops (innermost:false) are not counted.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: %python %S/../../scripts/agreement.py --raw %S/Inputs/agree/basic --out %t
+# RUN: FileCheck --check-prefix=CSV %s < %t/agreement.csv
+# RUN: FileCheck --check-prefix=SUM %s < %t/agreement_summary.csv
+
+# CSV:      kernel,file,line,col,function,lv_verdict,lv_reasons,lv_category,looplens_primary,looplens_rule,looplens_secondary,match,agree,agree_incl_secondary
+# CSV-NEXT: k1,k1.c,3,3,f,Vectorized,,none,none,none,,both,yes,yes
+# CSV-NEXT: k1,k1.c,7,3,g,Missed,UnsafeDep,loop-carried-dependence,loop-carried-dependence,mem-unsafe-dep,,both,yes,yes
+# CSV-NEXT: k1,k1.c,11,3,h,Missed,CantReorderFPOps,reduction,none,none,reduction,both,no,yes
+# CSV-NOT:  {{^k1,}}
+# SUM: loops_both,agree,agree_pct,agree_incl_secondary,agree_incl_secondary_pct,looplens_only,lv_only,ambiguous,unmapped
+# SUM-NEXT: 3,2,66.7,3,100.0,0,0,0,

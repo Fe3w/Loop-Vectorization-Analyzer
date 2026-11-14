@@ -1,0 +1,21 @@
+# collect.sh on a fake two-kernel bench tree: per-kernel JSONL + optimization
+# record, a manifest row per kernel, the toolchain file, and the summary CSV.
+# RUN: rm -rf %t && mkdir -p %t
+# RUN: bash %S/../../scripts/collect.sh --bench %S/Inputs/fakebench --out %t/raw \
+# RUN:   --plugin %shlibdir/LoopLens%shlibext --summary %t/summary.csv
+# RUN: FileCheck --check-prefix=MAN %s < %t/raw/manifest.csv
+# RUN: FileCheck --check-prefix=SUM %s < %t/summary.csv
+# RUN: test -s %t/raw/alpha.jsonl && test -s %t/raw/alpha.opt.yaml
+# RUN: test -s %t/raw/beta.jsonl && test -s %t/raw/beta.opt.yaml
+# RUN: FileCheck --check-prefix=TOOL %s < %t/raw/toolchain.txt
+
+# MAN:      kernel,path,exit,seconds,jsonl_lines,yaml_bytes
+# MAN-NEXT: alpha,k/alpha/alpha.c,0,{{[0-9.]+}},1,{{[1-9][0-9]*}}
+# MAN-NEXT: beta,k/beta/beta.c,0,{{[0-9.]+}},1,{{[1-9][0-9]*}}
+
+# SUM:      kernel,looplens_innermost,lv_vectorized,lv_missed
+# SUM-NEXT: alpha,1,1,0
+# SUM-NEXT: beta,1,0,1
+
+# TOOL: clang version 20.
+# TOOL: flags: -O3 -g

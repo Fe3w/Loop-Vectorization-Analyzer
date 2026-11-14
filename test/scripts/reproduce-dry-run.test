@@ -1,0 +1,15 @@
+# reproduce.sh --dry-run lists every step that regenerates a committed number,
+# in order, without running anything (no network in lit).
+# RUN: bash %S/../../scripts/reproduce.sh --dry-run | FileCheck %s
+
+# CHECK: step: cmake -S
+# CHECK: step: cmake --build {{.*}} --target check
+# CHECK: step: {{.*}}scripts/fetch_polybench.sh
+# CHECK: step: {{.*}}scripts/collect.sh --bench {{.*}}polybench-c-4.2.1-beta
+# CHECK: step: python3 {{.*}}scripts/agreement.py --raw {{.*}}results/raw --out
+# CHECK: step: {{.*}}scripts/codegen_unchanged.sh --bench {{.*}}polybench
+# CHECK: step: {{.*}}scripts/fetch_tsvc.sh
+# CHECK: step: {{.*}}scripts/collect.sh --bench {{.*}}tsvc --list
+# CHECK: step: python3 {{.*}}scripts/agreement.py --raw {{.*}}results/raw-tsvc --out {{.*}} --prefix tsvc_
+# CHECK: step: {{.*}}scripts/codegen_unchanged.sh --bench {{.*}}tsvc --list
+# CHECK: step: python3 {{.*}}scripts/results_table.py {{.*}} --update-readme {{.*}}README.md

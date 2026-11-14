@@ -1,0 +1,2 @@
+{"function":"f","header":"%a","depth":1,"file":"k4.c","line":2,"col":3,"innermost":true,"primary":"none","rule":"none","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}
+{"function":"f","header":"%z","depth":1,"file":"k4.c","line":20,"col":3,"innermost":true,"primary":"none","rule":"none","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"x"}}

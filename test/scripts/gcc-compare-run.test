@@ -1,0 +1,21 @@
+# End to end with the real GCC 13 on three loops:
+# - an exact-FP sum: LLVM 20 on x86 refuses without -ffast-math, but GCC
+#   reports it vectorized. Its code keeps the scalar adds in source order (a
+#   fold-left reduction, legal without fast-math), so the two compilers differ
+#   by design, not because one of them is wrong;
+# - a plain copy: both vectorize;
+# - a call to an opaque function: both refuse; GCC says "statement clobbers
+#   memory", which maps to call-or-unsafe-memop.
+# The agreement CSV is made by the real collect + agreement scripts.
+# REQUIRES: gcc
+# RUN: rm -rf %t && mkdir -p %t/bench/k
+# RUN: cp %S/Inputs/gcc/k.c %t/bench/k/k.c && echo k/k.c > %t/list
+# RUN: cd %t && CLANG=clang-20 %S/../../scripts/collect.sh --bench %t/bench --list %t/list \
+# RUN:   --plugin %shlibdir/LoopLens%shlibext --out %t/raw --summary %t/cs.csv > /dev/null
+# RUN: cd %t && %python %S/../../scripts/agreement.py --raw %t/raw --out %t > /dev/null
+# RUN: cd %t && %python %S/../../scripts/gcc_compare.py --agreement %t/agreement.csv --suite k \
+# RUN:   --include %t/bench --out %t/g.csv --summary %t/gs.csv > /dev/null
+# RUN: FileCheck %s < %t/g.csv
+# CHECK-DAG: k,{{.*}}k.c,3,sum,reduction,red-exact-fp,missed,vectorized,,none,no
+# CHECK-DAG: k,{{.*}}k.c,13,calls,call-or-unsafe-memop,call-no-vector-form,missed,missed,statement clobbers memory,call-or-unsafe-memop,yes
+# CHECK-DAG: k,{{.*}}k.c,8,{{.*}},none,none,vectorized,vectorized,,none,yes
