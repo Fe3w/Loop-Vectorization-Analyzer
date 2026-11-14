@@ -13,7 +13,9 @@
   (all reasons covered); new rules `cost-strided`, `hint-vectorize-disabled`, `mem-call-writes`;
   target-aware `red-exact-fp` and `stride-gather`.
 - Every rule's suggested fix checked against LLVM (`scripts/verify_fixes.sh`).
-- Timing harness with equal-flag configurations (`bench/timing/time.sh`); no timings published yet.
+- Timing harness with equal-flag configurations (`bench/timing/time.sh`) and one measured laptop
+  run (`results/timing.csv`, i7-13650HX): repair speedups from 0.91× to 5.79×; large gains only with
+  `-ffast-math` (cholesky, lu); none on nussinov and trmm (`docs/writeup.md`).
 - Plots from CSVs (`scripts/plots.py`), technical write-up (`docs/writeup.md`), weekly reproduce
   workflow.
 - Interchange legality for column walks (`cost-strided`), from DependenceAnalysis direction vectors:

@@ -16,9 +16,13 @@ accumulate into a possibly-aliasing address and keeps the value in a register
 (`-mllvm -looplens-repair`; outputs verified identical in strict FP,
 `results/repair_differential.csv`). What it fixes and where it stops:
 [docs/repair-limits.md](docs/repair-limits.md). The evidence that it does not change
-results: [docs/correctness.md](docs/correctness.md). Timing harness (original vs repaired
-under equal flags): `bench/timing/time.sh`; no timings are published until they
-have been measured on a quiet machine (`results/timing.csv`).
+results: [docs/correctness.md](docs/correctness.md). Measured speedup, original vs
+repaired under equal flags (`bench/timing/time.sh` → `results/timing.csv`; i7-13650HX,
+governor `performance`, PolyBench LARGE, median of 10 runs): cholesky 1.05× in strict
+FP, 2.29× with `-ffast-math` and 5.79× with `-ffast-math -march=native`, because the
+repaired loop then vectorizes; lu 1.04–1.34×; nussinov and trmm gain nothing
+(0.91–1.01×, slower in some configurations). Full table and caveats:
+[docs/writeup.md](docs/writeup.md#measured-speedup).
 
 ## Worked example
 

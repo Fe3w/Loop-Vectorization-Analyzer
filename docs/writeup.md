@@ -119,10 +119,43 @@ arrays exercises both copies of each repaired loop, and a mutation test shows th
 the runtime check is removed; with `-ffast-math` all 60 runs are within a tolerance fixed in advance
 (largest absolute difference 0.01, one unit in the last printed digit).
 
-**Speedups are not reported here.** The timing harness (`bench/timing/time.sh`) compares original
-and repaired builds only under identical flags, but no measured run exists yet: timings from shared
-cloud machines are too noisy to publish, and the run on a quiet machine is still to be done. The
-speedup plot will be generated from `results/timing.csv` once it exists.
+### Measured speedup
+
+Source: `results/timing.csv`, produced by `bench/timing/time.sh` on one laptop. CPU: 13th Gen Intel
+Core i7-13650HX; governor `performance`; pinned to CPU 2; PolyBench LARGE dataset; 10 timed runs
+per build (after the script's default of 1 unrecorded warm-up); Ubuntu clang / LLVM 20.1.2; run date
+2026-11-14. Each pair of builds uses identical flags; the repaired build additionally loads the
+plugin with `-mllvm -looplens-repair`. Speedup = median(base) /
+median(repair); above 1.00× the repaired build is faster. Plot: `results/plots/speedup.svg`.
+
+| Kernel | `-O3` | `-O3 -ffast-math` | `-O3 -march=native` | `-O3 -ffast-math -march=native` |
+| --- | --- | --- | --- | --- |
+| cholesky | 1.05× | 2.29× | 1.05× | 5.79× |
+| lu | 1.10× | 1.14× | 1.04× | 1.34× |
+| nussinov | 0.99× | 1.00× | 0.92× | 0.91× |
+| trmm | 0.97× | 0.98× | 1.01× | 0.99× |
+
+How to read it:
+- **Strict FP (no `-ffast-math`): small gains, from register promotion only.** The repaired loop
+  stays scalar because its sum must keep source order; the gain comes from keeping the running value
+  in a register instead of loading and storing it every iteration: cholesky 1.05×, lu 1.04–1.10×.
+  This is the configuration whose outputs are byte-identical to the original.
+- **Fast-math: large gains, because the repaired loop then vectorizes.** Reordering the sum is
+  allowed, so LLVM vectorizes the repaired loop (vectorized loops: cholesky 7 → 8, lu 6 → 8,
+  `results/repair_differential.csv`): cholesky 2.29× (5.79× with `-march=native`), lu 1.14× (1.34×).
+  The price is a reordered sum: outputs differ from the original within the tolerance fixed in
+  advance (largest absolute difference 0.01, [correctness.md](correctness.md)).
+- **No speedup on nussinov and trmm.** Their repaired loops do not vectorize in any configuration
+  (vectorized loops 4 → 4 and 6 → 6). Where the interquartile ranges of base and repair overlap
+  (nussinov `-O3` and `-O3 -ffast-math`; trmm with `-march=native`) the difference is within noise.
+  Elsewhere the repaired build is **slower**: nussinov 0.92× and 0.91× with `-march=native`, trmm
+  0.97× and 0.98× without it. The likely cost is the runtime overlap check and the second loop copy,
+  but that has not been measured separately.
+- **One unexplained observation.** cholesky's original build takes 1.15 s with `-march=native`
+  against 0.63 s with plain `-O3` (same CPU, same run). The speedups are unaffected (each compares
+  identical flags), but the cause has not been investigated.
+- **Scope.** One CPU, one machine, x86 only; LARGE dataset only. These are measurements of this
+  repair on four kernels, not a general claim.
 
 ## Limits
 
@@ -172,5 +205,6 @@ speedup plot will be generated from `results/timing.csv` once it exists.
 - A cost model for AArch64 that prices the whole loop body the way LoopVectorize does (VPlan-level
   cost), since per-operation pricing was rejected (X1).
 - Extend the repair to two accumulators (gesummv) by also checking the accumulators against each other.
-- Measure the repair's speedup on a quiet machine and on AArch64 hardware.
+- Measure the repair's speedup on AArch64 hardware and on more than one x86 CPU (today: one laptop
+  CPU, `results/timing.csv`), and separate the cost of the runtime check on nussinov and trmm.
 - A third, never-touched benchmark suite, to replace TSVC as the held-out check.
