@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- The LLVM 20.1.2 loop-interchange wrong result (listed under v0.2) is fixed after LLVM 20: LLVM
+  21.1.8, 22.1.8 and 23.1.5 refuse the nest (`results/interchange_newer_llvm.txt`).
+
 ## v0.2 (2026-11-14)
 
 - `looplens-repair`: versions a loop that accumulates into a possibly-overlapping address and keeps

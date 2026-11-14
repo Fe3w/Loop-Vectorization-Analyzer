@@ -186,7 +186,12 @@ How to read it:
   more precise in another:
   - **Overlapping arrays.** LLVM 20 drops "confused" dependences, so it interchanges a nest whose
     arrays may overlap. `test/interchange/confused-miscompile.test` runs such a program under `lli`;
-    the checksum changes after LLVM's interchange. LoopLens reports `unknown` there.
+    the checksum changes after LLVM's interchange. LoopLens reports `unknown` there. **Fixed after
+    LLVM 20:** LLVM 21.1.8, 22.1.8 and 23.1.5 refuse to interchange the same nest ("Cannot interchange
+    loops due to dependences" in 21; "All loops have dependencies in all directions" in 22 and 23),
+    and the checksum stays 1961666.0; on 20.1.2 it becomes 171990.0
+    (`results/interchange_newer_llvm.txt`, official release binaries, checked 2026-11-14). 20.1.8,
+    the last 20.x release, was not checked, so the fix may also be in a later 20.x.
   - **Repetition loop.** LLVM 20 refuses nests inside a repetition loop because of that loop's `*`
     direction, which the swap does not move (`outer-repetition.ll`). LoopLens calls these legal.
 
@@ -201,7 +206,7 @@ How to read it:
 
 ## What to try next
 
-- Report LLVM 20's confused-dependence interchange to upstream after checking a current LLVM.
+- Check whether the LLVM 20 repetition-loop refusal (`outer-repetition.ll`) still holds in LLVM 21–23.
 - A cost model for AArch64 that prices the whole loop body the way LoopVectorize does (VPlan-level
   cost), since per-operation pricing was rejected (X1).
 - Extend the repair to two accumulators (gesummv) by also checking the accumulators against each other.

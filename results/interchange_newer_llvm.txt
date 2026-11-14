@@ -1,0 +1,29 @@
+# LLVM 20 loop-interchange finding (test/interchange/confused-miscompile.test) re-checked on newer LLVM.
+# Date: 2026-11-14. Input: test/interchange/Inputs/overlap-colsum.ll. Binaries: Ubuntu opt-20/lli-20, and official llvm/llvm-project
+# Linux-X64 release archives for 21.1.8, 22.1.8, 23.1.5 (unpacked outside the repo).
+# Per version:  lli IN                                          -> reference checksum
+#               opt -passes='loop(loop-interchange)' IN -S -o X; lli X -> checksum after interchange
+#               remarks: -pass-remarks{,-missed,-analysis}=loop-interchange (depth-range remarks omitted)
+
+== LLVM version 20.1.2
+reference:          checksum=1961666.0
+after interchange:  checksum=171990.0
+remark: Loop interchanged with enclosing loop.
+
+== LLVM version 21.1.8
+reference:          checksum=1961666.0
+after interchange:  checksum=1961666.0
+remark: Computed dependence info, invoking the transform.
+remark: Cannot interchange loops due to dependences.
+
+== LLVM version 22.1.8
+reference:          checksum=1961666.0
+after interchange:  checksum=1961666.0
+remark: Computed dependence info, invoking the transform.
+remark: All loops have dependencies in all directions.
+
+== LLVM version 23.1.5
+reference:          checksum=1961666.0
+after interchange:  checksum=1961666.0
+remark: Computed dependence info, invoking the transform.
+remark: All loops have dependencies in all directions.
