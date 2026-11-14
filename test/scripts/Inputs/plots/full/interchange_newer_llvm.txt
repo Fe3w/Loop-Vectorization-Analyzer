@@ -1,0 +1,11 @@
+# test input
+== LLVM version 20.1.2
+reference:          checksum=100.0
+after interchange:  checksum=40.0
+remark: Loop interchanged with enclosing loop.
+
+== LLVM version 21.1.8
+reference:          checksum=100.0
+after interchange:  checksum=100.0
+remark: Computed dependence info, invoking the transform.
+remark: Cannot interchange loops due to dependences.

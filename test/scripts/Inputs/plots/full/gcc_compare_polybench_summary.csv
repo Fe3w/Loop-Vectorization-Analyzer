@@ -1,0 +1,4 @@
+suite,group,loops,gcc_vectorized,gcc_missed_same_category,gcc_missed_other_category,gcc_no_verdict
+polybench,all,10,4,3,3,0
+polybench,llvm-missed,6,2,3,1,0
+polybench,looplens:reduction,4,2,2,0,0

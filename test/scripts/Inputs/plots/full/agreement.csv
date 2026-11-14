@@ -1,0 +1,6 @@
+kernel,file,line,col,function,lv_verdict,lv_reasons,lv_category,looplens_primary,looplens_rule,looplens_secondary,match,agree,agree_incl_secondary,lv_categories,all_reasons_covered
+k,k.c,1,1,f,Vectorized,,none,none,none,,both,yes,yes,none,yes
+k,k.c,2,1,f,Missed,CantReorderFPOps,reduction,reduction,red-exact-fp,,both,yes,yes,reduction,yes
+k,k.c,3,1,f,Missed,UnsafeDep,loop-carried-dependence,loop-carried-dependence,mem-unsafe-dep,,both,yes,yes,loop-carried-dependence,yes
+k,k.c,4,1,f,Missed,VectorizationNotBeneficial,cost,none,none,,both,no,no,cost,no
+k,k.c,5,1,f,Vectorized,,none,stride,cost-strided,,both,no,no,none,no

@@ -1,0 +1,42 @@
+# scripts/plots.py: the figures beyond agreement/TSVC/speedup, each drawn only from its own input file.
+# RUN: rm -rf %t && mkdir -p %t/full %t/empty
+# RUN: %python %S/../../scripts/plots.py %S/Inputs/plots/full --out %t/full
+# Agreement splits disagreements by LLVM's reason when the per-loop CSV exists.
+# RUN: FileCheck --check-prefix=AGREE %s < %t/full/agreement.svg
+# AGREE: x86-64 (generic)
+# AGREE: differs: LLVM cost model: 1
+# AGREE: differs: other: 1
+# AGREE: 1 of 2 differences are cost-model decisions
+# Blockers count only missed loops, by LoopVectorize's first reason, in category order.
+# RUN: FileCheck --check-prefix=BLOCK %s < %t/full/blockers.svg
+# BLOCK: reduction: 1
+# BLOCK: loop-carried dependence: 1
+# BLOCK: of 5 loops
+# BLOCK: Cost-model rejections depend on the target.
+# RUN: FileCheck --check-prefix=GCC %s < %t/full/gcc_compare.svg
+# GCC: 2 of 6
+# GCC: Most are floating-point sums (PolyBench 2 of 2)
+# RUN: FileCheck --check-prefix=XCHG %s < %t/full/interchange.svg
+# XCHG: LLVM 20.1.2 loop-interchange bug, fixed in LLVM 21
+# XCHG: LLVM 20.1.2
+# XCHG: swapped the loops
+# XCHG: 40.0
+# XCHG: wrong result
+# XCHG: LLVM 21.1.8
+# XCHG: refused the swap
+# XCHG: 100.0
+# XCHG: correct result
+# Headline tiles: every value comes from one input file; no file paths in the figure.
+# RUN: FileCheck --check-prefix=NOPATH %s < %t/full/headline.svg
+# NOPATH-NOT: results/
+# RUN: FileCheck --check-prefix=HEAD %s < %t/full/headline.svg
+# HEAD: 15 / 20
+# HEAD: PolyBench 9 / 10
+# HEAD: 1 / 2
+# HEAD: 1 has no mechanical fix
+# HEAD: 2 / 2
+# HEAD: 1.50×
+# HEAD: lu, -ffast-math
+# No inputs: no figures at all (never a figure drawn from nothing).
+# RUN: %python %S/../../scripts/plots.py %t/empty --out %t/empty/plots
+# RUN: not ls %t/empty/plots/*.svg

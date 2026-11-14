@@ -1,0 +1,3 @@
+kernel,dataset,repaired_loops,strict,fast_vectorized_base,fast_vectorized_repair,fast_values,fast_differing,fast_max_abs_diff,fast_max_rel_err,fast_within_tolerance
+lu,SMALL,2,identical,6,8,10,1,0.01,0.1,yes
+lu,MEDIUM,2,identical,6,8,10,1,0.01,0.1,yes

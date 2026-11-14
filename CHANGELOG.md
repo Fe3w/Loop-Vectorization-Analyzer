@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Repository renamed to `Loop-Vectorization-Analyzer` (was `looplens`; GitHub redirects the old URL).
+  Internal names are unchanged: `LoopLens.so`, `looplens-analyze`, `looplens-repair`, `-looplens-*`.
+- README rewritten: results first, findings table, figures; the detailed usage and output format moved
+  to `docs/reference.md`.
+- Figures redrawn and extended (`scripts/plots.py`): results tiles, agreement split by LLVM's reason,
+  why LLVM missed each loop, speedup with run spread, GCC comparison, the LLVM 20 interchange bug;
+  architecture diagram `docs/img/pipeline.svg`.
 - The LLVM 20.1.2 loop-interchange wrong result (listed under v0.2) is fixed after LLVM 20: LLVM
   21.1.8, 22.1.8 and 23.1.5 refuse the nest (`results/interchange_newer_llvm.txt`).
 

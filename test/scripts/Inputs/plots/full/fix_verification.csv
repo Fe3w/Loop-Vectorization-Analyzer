@@ -1,0 +1,3 @@
+example,looplens_rule_before,lv_vectorized_before,fix_flags,lv_vectorized_after,fix_verified
+a,red-exact-fp,no,,yes,yes
+b,recur-unsupported,no,,n/a,no automatic fix

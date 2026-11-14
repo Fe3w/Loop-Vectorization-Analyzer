@@ -1,65 +1,33 @@
-# LoopLens
+# Loop Vectorization Analyzer
 
-[![ci](https://github.com/Fe3w/looplens/actions/workflows/ci.yml/badge.svg)](https://github.com/Fe3w/looplens/actions/workflows/ci.yml)
+[![ci](https://github.com/Fe3w/Loop-Vectorization-Analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/Fe3w/Loop-Vectorization-Analyzer/actions/workflows/ci.yml)
 
-LLVM's loop vectorizer tells you *that* it left a loop scalar ("loop not
-vectorized"), and sometimes a terse why, but not what to change. **LoopLens** is an
-out-of-tree LLVM 20 new-pass-manager plugin that runs right before the vectorizer
-inside a normal `clang -O3` build, collects the facts the vectorizer decides on —
-using LLVM's own analyses (ScalarEvolution, LoopAccessAnalysis, the induction and
-reduction descriptors, TargetLibraryInfo) — and reports, per loop, a blocker
-category, the evidence, and a source-level fix. A script scores those diagnoses
-against LoopVectorize's own remarks on PolyBench/C and a held-out TSVC suite.
+An LLVM 20 plugin that explains why LLVM's loop vectorizer left a loop scalar: a category, the
+evidence from LLVM's own analyses, and a source-level fix. It is scored against LLVM's own remarks,
+and an opt-in repair pass fixes one class of blocked loops.
 
-Status: v0.2. `looplens-repair` versions loops that
-accumulate into a possibly-aliasing address and keeps the value in a register
-(`-mllvm -looplens-repair`; outputs verified identical in strict FP,
-`results/repair_differential.csv`). What it fixes and where it stops:
-[docs/repair-limits.md](docs/repair-limits.md). The evidence that it does not change
-results: [docs/correctness.md](docs/correctness.md). Measured speedup, original vs
-repaired under equal flags (`bench/timing/time.sh` → `results/timing.csv`; i7-13650HX,
-governor `performance`, PolyBench LARGE, median of 10 runs): cholesky 1.05× in strict
-FP, 2.29× with `-ffast-math` and 5.79× with `-ffast-math -march=native`, because the
-repaired loop then vectorizes; lu 1.04–1.34×; nussinov and trmm gain nothing
-(0.91–1.01×, slower in some configurations). Full table and caveats:
-[docs/writeup.md](docs/writeup.md#measured-speedup).
+![Results](results/plots/headline.svg)
 
-## Worked example
+## Findings
 
-```c
-float sum(const float *a, int n) {
-  float s = 0.0f;
-  for (int i = 0; i < n; i++)
-    s += a[i];
-  return s;
-}
-```
+| Finding | Evidence |
+| --- | --- |
+| **LLVM 20.1.2's loop-interchange can change a program's result.** It ignores a dependence it cannot analyze ("confused") when two arrays overlap. The pass is off by default in LLVM 20, and LLVM 21.1.8, 22.1.8 and 23.1.5 refuse the same nest. Not reported upstream, since it is already fixed. | [`confused-miscompile.test`](test/interchange/confused-miscompile.test), [`interchange_newer_llvm.txt`](results/interchange_newer_llvm.txt) |
+| **LLVM 20 refuses some legal interchanges:** a nest inside a repetition loop, because of a `*` direction on a loop the swap does not move. | [`outer-repetition.ll`](test/interchange/outer-repetition.ll) |
+| **77 of 78 disagreements with LLVM are cost-model decisions** ("not beneficial"). The analyzer checks legality the way LoopVectorize does but has no full cost model, which is why AArch64 scores lowest. A narrow cost rule was tried and rejected by a bar set in advance. | [`agreement.svg`](results/plots/agreement.svg), [`DECISIONS.md`](DECISIONS.md) |
+| **GCC 13 vectorizes 7 of 78 (PolyBench) and 20 of 105 (TSVC) loops that LLVM 20 leaves scalar,** mostly floating-point sums that GCC keeps in source order. A policy difference, not a missed optimization. | [`gcc_compare.svg`](results/plots/gcc_compare.svg) |
+| **At -O3, LLVM 20 already versions every loop that only needs alias checks.** So the repair targets a different blocker: accumulation into an address that may overlap what the loop reads. | [`repair-limits.md`](docs/repair-limits.md) |
 
-```bash
-clang-20 -O3 -g -fpass-plugin=build/lib/LoopLens.so -Xclang -load -Xclang build/lib/LoopLens.so \
-  -mllvm -looplens-text=false -Rpass-analysis='looplens|loop-vectorize' -Rpass-missed=loop-vectorize -c test/clang/readme-example.c
-```
-
-LLVM says (the loop is on line 14 of `test/clang/readme-example.c`):
-
-```
-readme-example.c:14:3: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
-remark: loop not vectorized: cannot prove it is safe to reorder floating-point operations
-```
-
-LoopLens says, on the same line:
-
-```
-readme-example.c:14:3: remark: Category: reduction; Rule: red-exact-fp; Secondary: none;
-  Evidence: fadd reduction %12 needs exact FP order;
-  Fix: allow reassociation: -ffast-math or -fassociative-math, or #pragma clang loop vectorize(enable)
-```
-
-Add `#pragma clang loop vectorize(enable)` above the loop and LLVM reports
-`vectorized loop`. This example is a test (`test/clang/readme-example.c`), so it
-cannot drift from what the tool prints.
+![LLVM 20.1.2 loop-interchange bug](results/plots/interchange.svg)
 
 ## Results
+
+### Agreement with LLVM
+
+For every innermost loop, the analyzer's category is compared with the first reason LoopVectorize
+gives in its remarks. PolyBench/C 4.2.1 was the tuning set; TSVC was held out except for one rule.
+
+![Agreement by target and suite](results/plots/agreement.svg)
 
 <!-- generated by scripts/results_table.py from results/*.csv; do not edit by hand -->
 | Measure (PolyBench/C 4.2.1, clang-20 -O3 -g, x86-64; tuning set: rules were fixed on it) | Value |
@@ -87,325 +55,141 @@ cannot drift from what the tool prints.
 | AArch64 | `--target=aarch64-linux-gnu` | 112 / 163 (68.7%) | 165 / 180 (91.7%) |
 <!-- end generated -->
 
-![Agreement by target and suite](results/plots/agreement.svg)
+![Why LLVM did not vectorize](results/plots/blockers.svg)
 
-The full story, with limits: [docs/writeup.md](docs/writeup.md). Plots are drawn from
-the CSVs by `scripts/plots.py`.
-How the agreement is computed: [docs/methodology.md](docs/methodology.md). Every row
-is in `results/agreement.csv`; the disagreements found and fixed on the way are in
+Method: [docs/methodology.md](docs/methodology.md). Every loop is a row in `results/*agreement.csv`;
+the disagreements found and fixed along the way are in
 [results/disagreements.md](results/disagreements.md) and
-[results/tsvc_disagreements.md](results/tsvc_disagreements.md) (TSVC's remaining
-ones are cost-model rejections; LoopLens has no cost model). Loading the plugin does not
-change the generated code (`results/codegen_check.txt`, from
-`scripts/codegen_unchanged.sh`).
+[results/tsvc_disagreements.md](results/tsvc_disagreements.md). Loading the plugin does not change
+the generated code ([results/codegen_check.txt](results/codegen_check.txt)).
 
-## Build and test
+### Repair
 
-```bash
-cmake -S . -B build -G Ninja
-cmake --build build
-cmake --build build --target check     # runs lit + FileCheck tests
+The repair pass versions a loop that accumulates into a possibly-overlapping address and keeps the
+value in a register in the fast copy.
+
+![Speedup from the repair pass](results/plots/speedup.svg)
+
+- **Correct:** 60 / 60 strict-FP PolyBench runs byte-identical. An overlap driver runs both loop
+  copies, and a mutation test shows the runtime check is needed
+  ([docs/correctness.md](docs/correctness.md)).
+- **Fast only with `-ffast-math`:** in strict FP the repaired loop stays scalar, so cholesky and lu gain
+  only 1.04–1.10×. With
+  `-ffast-math` it vectorizes: up to 5.79× on cholesky with `-march=native`.
+- **Not everywhere:** nussinov and trmm gain nothing; four loops it does not turn into vector code
+  are explained in [docs/repair-limits.md](docs/repair-limits.md).
+
+Timing: one laptop CPU (i7-13650HX), governor `performance`, PolyBench LARGE, median of 10 runs
+([results/timing.csv](results/timing.csv), [docs/writeup.md](docs/writeup.md#measured-speedup)).
+
+## Worked example
+
+```c
+float sum(const float *a, int n) {
+  float s = 0.0f;
+  for (int i = 0; i < n; i++)
+    s += a[i];
+  return s;
+}
 ```
 
-## Use with clang
+LLVM says (the loop is on line 14 of `test/clang/readme-example.c`):
 
-LoopLens registers itself at LLVM's VectorizerStart extension point, so a normal
-optimised clang build runs it right before LoopVectorize, on the IR the
-vectorizer sees:
-
-```bash
-clang-20 -O3 -g -fpass-plugin=build/lib/LoopLens.so \
-  -Xclang -load -Xclang build/lib/LoopLens.so -mllvm -looplens-text=false \
-  -Rpass-analysis='looplens|loop-vectorize' -Rpass-missed=loop-vectorize -c foo.c
-# foo.c:8:3: remark: Category: reduction; Rule: red-exact-fp; ... [-Rpass-analysis=looplens]
-# foo.c:8:3: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+```
+readme-example.c:14:3: remark: loop not vectorized [-Rpass-missed=loop-vectorize]
+remark: loop not vectorized: cannot prove it is safe to reorder floating-point operations
 ```
 
-At that point LoopLens first runs LoopSimplify and LCSSA, which LoopVectorize
-applies itself before its checks (`-looplens-canonicalize=false` turns this off).
-`-Xclang -load` is only needed for `-mllvm -looplens-*` options (`-fpass-plugin`
-loads the plugin after LLVM options are parsed). `-looplens-text=false` turns off
-the stderr text report. Nothing runs at `-O0` (LoopVectorize does not either).
-`#pragma clang loop vectorize(enable)` / `vectorize_width(N>1)` are read from the
-loop metadata (`hints` line): they let LoopVectorize reorder FP reductions, so
-LoopLens does not report `red-exact-fp` for such loops, nor its cost rules (a
-forced loop skips LoopVectorize's profitability check).
+The analyzer says, on the same line:
 
-## Remarks
-
-LoopLens also reports each innermost loop as a standard LLVM optimization
-remark (pass `looplens`, remark name = the rule id, or `Vectorizable`), at the
-loop's start location — the location LoopVectorize uses for its per-loop
-remarks:
-
-```bash
-opt-20 -load-pass-plugin=build/lib/LoopLens.so -passes='looplens-analyze,loop-vectorize' \
-  -pass-remarks-analysis='looplens|loop-vectorize' -pass-remarks-missed=loop-vectorize \
-  -disable-output foo.ll
-# remark: unsafe1.c:2:3: Category: loop-carried-dependence; Rule: mem-unsafe-dep; Secondary: none; Evidence: ...; Fix: ...
+```
+readme-example.c:14:3: remark: Category: reduction; Rule: red-exact-fp; Secondary: none;
+  Evidence: fadd reduction %12 needs exact FP order;
+  Fix: allow reassociation: -ffast-math or -fassociative-math, or #pragma clang loop vectorize(enable)
 ```
 
-`-pass-remarks-output=foo.yaml` writes the same remarks as YAML with the keys
-`Category`, `Rule`, `Secondary`, `Evidence` and `Fix` under `Args`. Remarks need
-debug info (`-g`); without it they carry no `DebugLoc`.
-
-## JSON report
-
-`-looplens-json=<path>` also writes one JSON object per loop, one per line
-(JSON Lines), in report order:
-
-```bash
-opt-20 -load-pass-plugin=build/lib/LoopLens.so -passes=looplens-analyze \
-  -looplens-json=out.jsonl -disable-output foo.ll
-```
-
-```json
-{"function":"saxpy","header":"%for.body","depth":1,"file":"saxpy.c","line":2,"col":3,"innermost":true,"primary":"none","rule":"none","secondary":[],"evidence":"","fix":"","trip":{"kind":"symbolic","count":null,"btc":"(-1 + %n)"},"mem":{"status":"needs-checks","checks":1,"report":"none"}}
-```
-
-| Key | Type | Meaning |
-| --- | --- | --- |
-| `function`, `header`, `depth` | string, string, int | as in the text report |
-| `file`, `line`, `col` | string/int or `null` | `Loop::getStartLoc()`; `null` without debug info |
-| `innermost` | bool | only innermost loops are classified |
-| `primary`, `rule` | string, or `null` for outer loops | classification (`"none"` = no blocker) |
-| `secondary` | array of strings | other categories that apply |
-| `evidence`, `fix` | string | empty when `primary` is `"none"` |
-| `trip` | object | `kind`, `count` (string, or `null` unless constant), `btc` (SCEV text) |
-| `mem` | object, innermost only | `status`, `checks`, `report` (LAA remark name) |
-| `interchange` | object, `cost-strided` loops only | `legal` (`true`, `false`, or `null` = unknown), `dirs` (array of `"(<outer>,<inner>)"`), `bounds_depend_on_parent` (bool), `why` (`null` or the reason legality is unknown) |
-
-The file is truncated when the first loop of a run is written and appended to
-afterwards. `%p` in the path is replaced by the process ID (one file per compiler
-process, e.g. `-looplens-json=out.%p.jsonl` in a parallel build). With clang, the option needs the plugin loaded before option
-parsing: `-fpass-plugin=LoopLens.so -Xclang -load -Xclang LoopLens.so -mllvm -looplens-json=out.jsonl`.
+Add `#pragma clang loop vectorize(enable)` above the loop and LLVM reports `vectorized loop`. This
+example is a test (`test/clang/readme-example.c`), so it cannot drift from what the tool prints.
 
 ## How it works
 
-- **Where it runs.** Inside clang, LoopLens registers at LLVM's VectorizerStart
-  extension point. It first runs LoopSimplify and LCSSA, the same canonicalisation
-  LoopVectorize applies before its checks, so it sees the IR the vectorizer sees.
-  Loading the plugin does not change the generated code (checked for every
-  benchmark kernel: `results/codegen_check.txt`).
-- **Facts, not re-implementations.** Trip counts from ScalarEvolution; inductions
-  and reductions from `InductionDescriptor` / `RecurrenceDescriptor`; memory safety,
-  dependences and runtime checks from `LoopAccessAnalysis`; call vectorizability
-  from the same test LoopVectorize uses (`getVectorIntrinsicIDForCall`,
-  `VFDatabase`, TargetLibraryInfo).
-- **One rule table, in LLVM's order.** Rules are checked in the order
-  LoopVectorize's own checks run (`LoopVectorizationLegality::canVectorize`, then
-  `LoopVectorizePass::processLoop`, then the cost model), so the *primary* blocker
-  is the first thing LoopVectorize would stop at. The rule table is in the output
-  reference below.
-- **Measured, not assumed.** `scripts/agreement.py` attributes LoopVectorize's
-  remarks to loops and compares (method: [docs/methodology.md](docs/methodology.md)).
+![How it works](docs/img/pipeline.svg)
+
+- **Where it runs.** Inside clang, at LLVM's VectorizerStart extension point, right before
+  LoopVectorize, after the same canonicalization (LoopSimplify, LCSSA). It sees the IR the
+  vectorizer sees.
+- **Facts, not re-implementations.** Trip counts from ScalarEvolution; inductions and reductions
+  from LLVM's descriptors; dependences and runtime checks from LoopAccessAnalysis; call
+  vectorizability from the same test LoopVectorize uses.
+- **Rules in LLVM's order.** 13 rules in 8 categories, checked in the order LoopVectorize runs its
+  own checks, so the primary blocker is the first one LoopVectorize would stop at. Rule table:
+  [docs/reference.md](docs/reference.md#output-reference-text-report-via-opt).
 
 ## Limits
 
-- LLVM 20 only. Three targets measured (table above). Cost-model decisions are
-  target-specific and LoopLens has no cost model, so "vectorization not
-  beneficial" is not predicted: that is almost all of the remaining
-  disagreements, and why AArch64 scores much lower than x86.
-- PolyBench was used to fix rules (`results/disagreements.md`); TSVC was held out
-  until the `cost-strided` rule, which was derived from TSVC's misses (its untuned
-  first run is kept in `results/tsvc_agreement_summary_before.csv`).
-- Loop hints modelled: `vectorize(enable)`, `assume_safety`, `vectorize_width`
-  (forced loops skip the cost rules; LAA itself honours `assume_safety`) and
-  `vectorize(disable)`; `interleave_count` and `unroll` hints are not.
+- One LLVM version (20.1.2). AArch64 is compile-only and the weakest target (68.7% on PolyBench).
+- PolyBench is the tuning set; TSVC is mostly held out (one rule came from it).
+- No full cost model: "not beneficial" decisions are not predicted.
+- The repair covers one loop pattern and pays off only with `-ffast-math` or the vectorize pragma.
+  Speedups come from one x86 laptop CPU.
+
+More in [docs/writeup.md](docs/writeup.md#limits).
+
+## Build and use
+
+> **Names.** The repository is called *Loop-Vectorization-Analyzer*; inside it the project keeps its
+> original name, **LoopLens**. The plugin builds as `build/lib/LoopLens.so`, the passes are
+> `looplens-analyze` and `looplens-repair`, options start with `-looplens-`, and remarks use the
+> pass name `looplens`. The old URL `github.com/Fe3w/looplens` redirects here.
+
+Requirements: Ubuntu 24.04 with LLVM 20 from `noble-updates` (the same packages CI installs):
+
+```bash
+sudo apt-get install -y -t noble-updates llvm-20 llvm-20-dev llvm-20-tools libpolly-20-dev \
+  clang-20 zlib1g-dev libzstd-dev ninja-build cmake python3-yaml
+```
+
+```bash
+git clone https://github.com/Fe3w/Loop-Vectorization-Analyzer.git
+cd Loop-Vectorization-Analyzer
+cmake -S . -B build -G Ninja
+cmake --build build
+cmake --build build --target check     # lit + FileCheck tests
+```
+
+Explain the loops in a file:
+
+```bash
+P=build/lib/LoopLens.so
+clang-20 -O3 -g -fpass-plugin=$P -Xclang -load -Xclang $P -mllvm -looplens-text=false \
+  -Rpass-analysis='looplens|loop-vectorize' -Rpass-missed=loop-vectorize -c foo.c
+```
+
+Add `-mllvm -looplens-repair` to run the repair pass. Options, remarks, the JSON report and the full
+text output: [docs/reference.md](docs/reference.md).
 
 ## Reproduce
 
 ```bash
 scripts/reproduce.sh          # build, test, download (checksummed), collect, score, update README
 scripts/reproduce.sh --dry-run
+python3 scripts/plots.py      # redraw the figures in results/plots/ from results/
 ```
 
-The `reproduce` GitHub workflow (manual and weekly) runs the same script and fails
-if any committed result changes.
+The `reproduce` GitHub workflow (manual and weekly) runs the same script and fails if any committed
+result changes.
 
-## Output reference (text report via opt)
+## Documentation
 
-```bash
-# Canonical IR: what LoopVectorize sees (rotated, LCSSA, loop-simplify form).
-clang-20 -O1 -g -fno-discard-value-names -Xclang -disable-llvm-passes -emit-llvm -S foo.c -o - \
-  | opt-20 -passes='sroa,loop-simplify,lcssa,loop(loop-rotate)' -S -o foo.ll
-opt-20 -load-pass-plugin=build/lib/LoopLens.so -passes=looplens-analyze -disable-output foo.ll
-```
-
-Output is one block per loop, outer before inner:
-
-```
-looplens: function 'saxpy'
-  loop header=%for.body depth=1 loc=saxpy.c:2:3
-    trip kind=symbolic count=none btc=[(-1 + %n)] max-btc=[2147483646] symbolic-max-btc=[(-1 + %n)]
-    iv phi=%i.05 kind=int start=0 step=1 scev=[{0,+,1}<nuw><nsw><%for.body>] controls-exit=yes
-    form simplify=yes rotated=yes lcssa=yes exiting=single innermost=yes guarded=yes
-    mem status=needs-checks checks=1 max-safe-width=any report=none
-```
-
-- `loc=` is `Loop::getStartLoc()`, the same location LLVM's loop-vectorize remarks
-  use (`loc=<none>` without debug info). The file is the debug-info file name,
-  i.e. the path as it was given to clang.
-- `trip` comes from ScalarEvolution. `kind` is `constant` (with the exact
-  `count`), `symbolic` or `unknown`; `btc` is the backedge-taken count
-  (trip count − 1), followed by its constant and symbolic upper bounds, as SCEV
-  text in brackets (`***COULDNOTCOMPUTE***` when unknown). Unknown loops carry a
-  coarse `reason`, first match wins: `no-exit` (e.g. `while (1)`);
-  `needs-scev-predicate` (computable once SCEV may assume e.g. no-wrap, which a
-  runtime check can guarantee; any number of exits); `multiple-exits`;
-  `exit-cond-not-affine` (an operand of the exit compare or switch — looking
-  through `&&`/`||`, `!`, `freeze` and integer casts — is neither
-  loop-invariant nor an affine recurrence of the loop, e.g. a loaded value);
-  `exit-cond-not-icmp` (e.g. a floating-point compare); `other`. For a single
-  exit all leaf conditions are inspected, so the reason does not depend on
-  operand order.
-- `iv` lists every header phi that `InductionDescriptor` accepts (no SCEV
-  predicates assumed), in header order: `kind` int/ptr/fp, `start` value, `step`
-  (in bytes for pointer IVs), the add-recurrence `scev`, and `controls-exit=yes`
-  for the IV `Loop::getInductionVariable` returns (the one feeding the latch
-  compare). `iv <none>` if there is no induction phi; `iv <no-preheader>` when the
-  loop has no preheader (InductionDescriptor cannot be asked then).
-- `recur` lines name every header phi that is not an induction: the reduction
-  kind LLVM's `RecurrenceDescriptor` recognises (`add`, `mul`, `fadd`, `smax`,
-  `ianyof`, …; `exact-fp=yes` when it may not be reassociated, `ordered=yes` when
-  it could be done in order), `fixed-order` for a recurrence such as
-  `t = a[i]` carried to the next iteration, or `unsupported`.
-- `form` reports the loop-form facts LoopVectorize relies on, straight from
-  LoopInfo: loop-simplify form, rotated (latch is an exiting block), LCSSA,
-  single or multiple exiting blocks, innermost, and guarded. `guarded` only
-  recognises LoopInfo's own guard pattern (a branch around a loop with a unique
-  exit), so `guarded=no` is not proof that no guard exists.
-- `cfg` (innermost loops) counts blocks, blocks that need predication
-  (if-conversion), switches and exiting blocks; `early-exit` is `none`,
-  `countable` or `uncountable` (a non-latch exit without an exit count).
-- `mem` (innermost loops only; outer loops print `mem <not-innermost>`) is
-  LoopAccessAnalysis's verdict: `status=safe`, `needs-checks` (safe with
-  `checks=<n>` runtime pointer checks) or `unsafe` (LAA does not allow
-  vectorization); `max-safe-width` in bits (`any`, or `n/a` when unsafe);
-  `report=` is LAA's remark name, the same `Name:` LoopVectorize writes to its
-  remark YAML (e.g. `UnsafeDep`, `CantIdentifyArrayBounds`).
-- `dep` lines (innermost loops, after `mem`) list the dependences LAA's
-  MemoryDepChecker recorded, in its order: `kind` is LLVM's own name (`Backward`,
-  `BackwardVectorizable`, `Forward`, `Unknown`, `IndirectUnsafe`, `…ButPreventsForwarding`),
-  `src`/`dst` are `load:`/`store:` plus the pointer, and `dist` is
-  address(dst) − address(src) in bytes within one iteration — printed only when
-  both pointers advance by the same step every iteration, else `none`.
-  `dep <none>` when nothing was recorded.
-- `access` lines (innermost loops) give each load and store with its stride,
-  classified from the pointer's SCEV: `uniform` (stride 0), `unit` (+1 element),
-  `reverse` (−1), `constant` (K elements), `symbolic` (a loop-invariant step,
-  printed in bytes; `versioned=yes` if LoopAccessAnalysis recorded it as a
-  symbolic stride LoopVectorize can version on), `indirect` (the address depends
-  on a value loaded in the loop, e.g. `b[idx[i]]`) or `unknown`.
-- `call` lines (innermost loops) judge each call the way LoopVectorize does:
-  `vector=intrinsic` (has a vector intrinsic, e.g. `llvm.sqrt.f32`), `vfabi`
-  (a declared vector variant), `tli` (the target library says so) or `no`;
-  `mem` is its memory effect, and `math-lib=yes` marks a math-library call that
-  `-fno-math-errno` / `-ffast-math` would typically turn into an intrinsic.
-  `nonsimple` lines list volatile and atomic loads/stores.
-- `blocker` (last line of each innermost loop; outer loops print
-  `blocker <not-innermost>`) is the classification: `primary` is the category of
-  the first rule that applies, `rule` names that rule, `secondary` lists the
-  other categories that also apply. Rules are checked in LoopVectorize's own
-  order (LLVM 20 `LoopVectorizationLegality::canVectorize`, then the cost model):
-
-  | Rule | Category | When |
-  | --- | --- | --- |
-  | `hint-vectorize-disabled` | hint | `#pragma clang loop vectorize(disable)` or `vectorize_width(1)` (LoopVectorize reports these as "not beneficial") |
-  | `cfg-uncountable-early-exit` | control-flow | an early exit without an exit count (LLVM 20 keeps early-exit vectorization off by default) |
-  | `cfg-unpredicable` | control-flow | a call without a vector form, or a volatile/atomic access, in a block that needs predication (`NoCFGForSelect`) |
-  | `red-exact-fp` | reduction | an FP reduction that needs exact (non-reassociable) math and cannot be done in order on this target (`CantReorderFPOps`; x86 yes, AArch64 does ordered reductions; use `-ffast-math` or `-fassociative-math`) |
-  | `recur-unsupported` | reduction | a header phi that is neither induction, reduction nor recurrence |
-  | `call-no-vector-form` | call-or-unsafe-memop | a call with `vector=no` (`CantVectorizeLibcall`) |
-  | `mem-non-simple` | call-or-unsafe-memop | a volatile or atomic access |
-  | `mem-call-writes` | call-or-unsafe-memop | a call with a vector variant (e.g. `-fveclib`) that may still write memory, such as `errno` |
-  | `trip-uncountable` | trip-count | trip count unknown (and not just a SCEV predicate away), or LAA could not count iterations |
-  | `mem-unsafe-dep` | loop-carried-dependence | LAA: unsafe dependence (`UnsafeDep`) |
-  | `mem-no-runtime-check` | aliasing | LAA cannot build a runtime alias check (`CantIdentifyArrayBounds`, `CantCheckMemDepsAtRunTime`) |
-  | `stride-gather` | stride | a gather/scatter (`indirect`) the target has no legal gather for, or a symbolic stride LAA does not version; a cost-model category |
-  | `cost-strided` | stride | every access has a constant stride beyond 8 elements and the target has no legal gather (column walks); a cost-model category |
-
-  For `cost-strided` loops an `interchange` line comes before `blocker`:
-  `interchange legal=<yes|no|unknown> [dirs=[(<,>),...]] [bounds=depend-on-parent] [why=...]`. It says
-  whether swapping the loop with its parent is legal, from DependenceAnalysis
-  direction vectors (normalised as LoopInterchange does). The swap reverses a
-  dependence exactly when its (parent, loop) directions can be `(<,>)` or
-  `(>,<)`, so either of those makes it `no`. Dependences that some loop
-  further out already carries are skipped. `why` is `no-parent-loop`,
-  `not-perfect-nest` (the parent's own blocks touch memory, as in
-  LoopInterchange's "tightly nested" check), `confused` (DependenceAnalysis
-  could not describe a pair) or `unsupported-memop`.
-  `bounds=depend-on-parent` marks a triangular nest (`i = j..N`): there the
-  swap needs new bounds, and LLVM 20's pass cannot derive them. The `fix` text
-  then says one of four things: the interchange is legal and
-  `-mllvm -enable-loopinterchange` does it; it is legal but the bounds must be
-  rewritten by hand (triangular); it is not legal; or legality is unknown. Tests: `test/interchange/`, with LLVM's
-  own `loop-interchange` as the oracle. Two documented differences, both in
-  tests:
-  - **Overlapping arrays.** LLVM 20 drops confused dependences and
-    interchanges anyway. `confused-miscompile.test` shows the result changing
-    when the arrays overlap.
-  - **Repetition loop.** LLVM 20 refuses when a loop outside the swapped pair
-    has direction `*` (`outer-repetition.ll`, the TSVC shape), although the
-    swap is legal.
-
-  After a `blocker` line with a primary category, `evidence` quotes the facts
-  that made the rule fire and `fix` suggests a source-level change, e.g.
-
-  ```
-      blocker primary=reduction rule=red-exact-fp secondary=none
-      evidence fadd reduction %s.05 needs exact FP order
-      fix allow reassociation: -ffast-math or -fassociative-math, or #pragma clang loop vectorize(enable)
-  ```
-
-  Fix verification: `scripts/verify_fixes.sh` applies each rule's suggested fix to
-  a small example (`bench/fixes/<rule>/before.c` → `after.c`) and checks that
-  LLVM 20 then vectorizes it; the result per rule is in
-  `results/fix_verification.csv`. Every rule's fix is verified there except
-  `recur-unsupported`, which has no mechanical fix (a true recurrence must be
-  rewritten by hand).
-
-  Second compiler: `scripts/gcc_compare.py` adds GCC 13's verdict and reason
-  for each loop (`results/gcc_compare_*.csv`; summary in `docs/writeup.md`).
-
-  Static estimate: `scripts/fix_mca.py` runs llvm-mca on the hot loop of
-  each example before and after the fix and writes cycles per element plus
-  their ratio to `results/fix_mca.csv`. It is a model, not a measurement: no
-  caches, and no ratio when the loop contains a call.
-
-  Not blockers: several exiting blocks when every exit is countable (LLVM 20
-  accepts them on legality), switches, nested ifs and conditional stores (LLVM 20 if-converts
-  them), a missing preheader (LoopVectorize simplifies loops itself), runtime
-  pointer checks (it versions the loop), constant strides (interleave groups).
-- `header=` is the header block as an IR operand (`%for.body`, `%1` when
-  unnamed), the form `print<loops>` uses and the one inside SCEV text.
-
-## PolyBench data collection
-
-```bash
-scripts/fetch_polybench.sh            # PolyBench/C 4.2.1-beta into bench/polybench (sha256 checked)
-scripts/collect.sh --bench bench/polybench/polybench-c-4.2.1-beta \
-  --out results/raw --summary results/collect_summary.csv
-```
-
-`collect.sh` compiles each of the 30 kernels with `clang-20 -O3 -g` and the
-plugin, keeping per kernel the optimization record (LoopVectorize and LoopLens
-remarks) and LoopLens's JSON Lines in `results/raw/` (not committed), plus
-`manifest.csv` and `toolchain.txt`. The committed `results/collect_summary.csv`
-counts, per kernel, LoopLens's innermost loops and LoopVectorize's per-loop
-remarks; `results/collect_summary_toolchain.txt` records the compiler that
-produced it.
-
-Test fixtures are made with `scripts/make_fixture.sh` (the recipe above with
-`-g0`, plus stripping of attributes and loop metadata; `--tbaa` keeps TBAA, which
-LoopAccessAnalysis needs; `--g` keeps debug info for remark tests; `--o3` captures the IR exactly as LoopVectorize sees it
-at `clang -O3`, needed wherever SimplifyCFG/InstCombine change the loop, e.g.
-min/max and any-of reductions).
-
-Input should be in the canonical form LoopVectorize sees (loop-simplify, LCSSA,
-rotated; the recipe above produces it). LoopLens is an analysis and never
-changes the IR, so it does not canonicalise loops itself; on other input its
-facts describe the IR as given.
+| Document | Contents |
+| --- | --- |
+| [docs/writeup.md](docs/writeup.md) | Technical write-up: design, results, limits, next steps |
+| [docs/reference.md](docs/reference.md) | Options, remarks, JSON report, text output, rule table |
+| [docs/methodology.md](docs/methodology.md) | How agreement with LLVM is computed |
+| [docs/correctness.md](docs/correctness.md) | Evidence that the repair does not change results |
+| [docs/repair-limits.md](docs/repair-limits.md) | What the repair fixes and what it does not |
+| [DECISIONS.md](DECISIONS.md) | One line per design decision |
+| [CHANGELOG.md](CHANGELOG.md) | Releases |
 
 ## Layout
 
@@ -414,6 +198,6 @@ facts describe the IR as given.
 | `lib/` | Pass sources |
 | `test/` | lit/FileCheck regression tests |
 | `bench/` | PolyBench/C and TSVC harness |
-| `results/` | CSVs and plots; the only source of reported numbers |
-| `scripts/` | Helper scripts (remark parsing, agreement table) |
-| `DECISIONS.md` | One line per design decision |
+| `results/` | CSVs and figures; the only source of reported numbers |
+| `scripts/` | Data collection, scoring, figures |
+| `docs/` | Write-up, reference, methodology |
